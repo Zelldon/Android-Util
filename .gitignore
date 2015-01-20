@@ -24,3 +24,8 @@ proguard/
 
 # Log Files
 *.log
+
+#Netbeans Files
+Zell-Android-Util/nbandroid/
+Zell-Android-Util/private/
+Zell-Android-Util/proguard-project.txt
