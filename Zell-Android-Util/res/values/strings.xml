@@ -22,4 +22,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
     <string name="progress">Please wait&#8230;</string>
     <!--SPLASH SCREEN-->
     <string name="splash_descr">The splash screen.</string>
+    <!--DeviceInfoProvider-->
+    <string name="log_device_os">Android</string>
+    <string name="log_device_res">%1$dx%2$d</string>
 </resources>
