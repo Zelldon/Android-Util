@@ -46,6 +46,9 @@ public class AsyncDBEntityUpdater extends AsyncTask<SQLiteOpenHelper, Void, Inte
   
   @Override
   protected Integer doInBackground(SQLiteOpenHelper... helper) {
+    if (helper == null || helper.length == 0 || helper[0] == null)
+      throw new IllegalArgumentException();
+    
     SQLiteDatabase db = helper[0].getWritableDatabase();
     return db.update(query.getSelectedEntity().getTableName(), query.getValues(),
                     query.getSelection(), query.getSelectionArgs());
