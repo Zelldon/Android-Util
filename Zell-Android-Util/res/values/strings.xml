@@ -25,4 +25,13 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
     <!--DeviceInfoProvider-->
     <string name="log_device_os">Android</string>
     <string name="log_device_res">%1$dx%2$d</string>
+    
+    <!--Welcome Fragment-->
+    <string name="frag_welcome">Welcome!</string>
+    
+    <!--MainNavigationDrawer-->
+    <string name="drawer_open">Open navigation drawer</string>
+    <string name="drawer_close">Close navigation drawer</string>
+    <string name="search_submitted">Submitted: %1$s</string>
+    <string name="search">Search</string>
 </resources>
