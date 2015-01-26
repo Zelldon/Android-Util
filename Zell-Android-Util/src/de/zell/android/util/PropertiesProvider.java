@@ -133,14 +133,25 @@ public class PropertiesProvider {
     return p == null ? System.getProperty(key, defaultValue) : p; 
   }
   
+  
   /**
    * Initialized the PropertiesProvider object.
    * Reads the property file and saves the values into the Properties object.
    */
-  private void init() { 
+  private void init() {
+    init(this.getClass());
+  }
+  
+  /**
+   * Initialized the PropertiesProvider object.
+   * Reads the property file from class path 
+   * and saves the values into the Properties object.
+   * 
+   * @param c the class which defines the class path
+   */
+  protected void init(Class c) { 
     try {
       //load a properties file from class path, inside static method
-      Class c = this.getClass();
       InputStream stream = c.getResourceAsStream(PROPERTY_FILE);
       if (stream != null)
         properties.load(stream);
@@ -154,8 +165,8 @@ public class PropertiesProvider {
     return PROPERTY_FILE;
   }
   
-  public static void setPropertyFile(String file) {
+  public static void setPropertyFile(Class c, String file) {
     PROPERTY_FILE = file;
-    instance.init();
+    instance.init(c);
   }
 }
