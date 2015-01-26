@@ -72,6 +72,9 @@ public class EntityListAdapter extends BaseAdapter implements SectionIndexer {
    * Creates the sections for the given entity list.
    */
   private void createSections() {
+    if (entities == null)
+      return;
+    
     sectionIndexes = new HashMap<String, Integer>();
     int size = entities.size();
     for (int i = 0; i < size; i++) {
