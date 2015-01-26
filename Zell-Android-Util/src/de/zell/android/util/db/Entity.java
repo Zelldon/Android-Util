@@ -17,13 +17,15 @@
  */
 package de.zell.android.util.db;
 
+import java.io.Serializable;
+
 /**
  * Represents an entity interface which should be implemented from all entity
  * classes of a Database.
  * 
  * @author Christopher Zell <zelldon91@googlemail.com>
  */
-public interface Entity<ID> {
+public interface Entity<ID> extends Serializable {
   
   /**
    * Returns the identifier of the entity with the given ID type.
