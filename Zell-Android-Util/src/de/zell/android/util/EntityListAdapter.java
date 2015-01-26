@@ -63,7 +63,7 @@ public class EntityListAdapter extends BaseAdapter implements SectionIndexer {
    * @param c the application context
    */
   public EntityListAdapter(List<Entity> entities, Context c) {
-    this.entities = entities;
+    this.entities = entities != null ? entities : new ArrayList<Entity>();
     this.context = c;
     createSections();
   }
@@ -72,9 +72,6 @@ public class EntityListAdapter extends BaseAdapter implements SectionIndexer {
    * Creates the sections for the given entity list.
    */
   private void createSections() {
-    if (entities == null)
-      return;
-    
     sectionIndexes = new HashMap<String, Integer>();
     int size = entities.size();
     for (int i = 0; i < size; i++) {
@@ -129,12 +126,12 @@ public class EntityListAdapter extends BaseAdapter implements SectionIndexer {
   }
 
   /**
-   * Replaces the results of the search.
+   * Replaces the entities of the adapter
    *
-   * @param results the results
+   * @param entities the entities
    */
-  public void setResults(List results) {
-    this.entities = results;
+  public void setResults(List entities) {
+    this.entities = entities != null ? entities : new ArrayList<Entity>();
     createSections();
   }
 
