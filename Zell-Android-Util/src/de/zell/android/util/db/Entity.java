@@ -37,5 +37,5 @@ public interface Entity<ID> {
    * 
    * @return the table name
    */
-  public abstract String getTableName();
+  public String getTableName();
 }
