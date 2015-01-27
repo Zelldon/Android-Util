@@ -24,7 +24,6 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 import de.zell.android.util.db.Entity;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -154,6 +153,7 @@ public class EntitySectionListAdapter extends BaseAdapter {
    */
   protected void setSectionView(View row, int pos) {
     String sec = sections.get(pos);
+    row.setBackgroundColor(context.getResources().getColor(R.color.light_gray));
     if (sec != null) {
       TextView header = (TextView) row.findViewById(R.id.section_header);
       header.setText(sec);

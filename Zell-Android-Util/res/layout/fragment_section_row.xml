@@ -27,6 +27,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:background="@color/light_gray"
+            android:textColor="@color/black"
             android:textSize="24sp"
             android:visibility="gone"/>
     <TextView
