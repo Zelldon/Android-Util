@@ -25,7 +25,6 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 import de.zell.android.util.db.Entity;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -52,21 +51,13 @@ public class EntitySectionListAdapter extends BaseAdapter {
   private Context context;
   
   /**
-   * The comparator which will be used to compare the entities
-   * and sort the entity list.
-   */
-  private Comparator<Entity> comparator;
-          
-
-  /**
    * The ctor of the EntitySectionListAdapter.
    *
    * @param c the application context
    */
-  public EntitySectionListAdapter(Context c, Comparator<Entity> comparator) {
+  public EntitySectionListAdapter(Context c) {
     this.entities = new SparseArray<Entity>();
     this.sections = new SparseArray<String>();
-    this.comparator = comparator;
     this.context = c;
   }
 
@@ -99,7 +90,7 @@ public class EntitySectionListAdapter extends BaseAdapter {
     if (entities == null)
       return;
     
-    Collections.sort(entities, comparator);
+    Collections.sort(entities, getComparator());
     
     int count = 0;
     for (int i = 0; i < entities.size(); i++) {
@@ -187,5 +178,14 @@ public class EntitySectionListAdapter extends BaseAdapter {
    */
   private boolean isSection(int pos) {
     return sections.get(pos) != null;
+  }
+  
+  /**
+   * Returns the comparator which will be used to sort the entity list.
+   * 
+   * @return the entity comparator
+   */
+  protected EntityComparator getComparator() {
+    return new EntityComparator();
   }
 }
