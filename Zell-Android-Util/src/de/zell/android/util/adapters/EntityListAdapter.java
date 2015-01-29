@@ -22,94 +22,60 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.SectionIndexer;
 import android.widget.TextView;
+import de.zell.android.util.EntityComparator;
 import de.zell.android.util.R;
+import de.zell.android.util.SparseArray;
 import de.zell.android.util.db.Entity;
-import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 
 /**
- * The EntityListAdapter to display each single entity in the ListView.
+ * The EntitySectionListAdapter to display each single entity inside
+ * of a sectionalised ListView.
  *
  * @author Christopher Zell <zelldon91@googlemail.com>
  */
-public class EntityListAdapter extends BaseAdapter implements SectionIndexer {
+public class EntityListAdapter extends BaseAdapter {
 
   /**
    * The entities.
    */
-  private List<Entity> entities;
-  /**
-   * Contains the sections with the corresponding index of the first element in
-   * the section in the entities list.
-   */
-  private HashMap<String, Integer> sectionIndexes;
+  protected SparseArray<Entity> entities;
+  
   /**
    * Contains the sections.
    */
-  private String[] sections;
+  protected SparseArray<String> sections;
   
   /**
    * The application context.
    */
   private Context context;
-
+  
   /**
-   * The ctor of the EntityListAdapter.
+   * The ctor of the EntitySectionListAdapter.
    *
-   * @param r the entities
    * @param c the application context
    */
-  public EntityListAdapter(List<Entity> entities, Context c) {
-    this.entities = entities != null ? entities : new ArrayList<Entity>();
+  public EntityListAdapter(Context c) {
+    this.entities = new SparseArray<Entity>();
+    this.sections = new SparseArray<String>();
     this.context = c;
-    createSections();
-  }
-
-  /**
-   * Creates the sections for the given entity list.
-   */
-  private void createSections() {
-    sectionIndexes = new HashMap<String, Integer>();
-    int size = entities.size();
-    for (int i = 0; i < size; i++) {
-      String str = getSectionForEntity(i);
-      if (str != null) {
-        if (!sectionIndexes.containsKey(str)) {
-          sectionIndexes.put(str, i);
-        }
-      }
-      ArrayList<String> sectionList = new ArrayList<String>(sectionIndexes.keySet());
-      Collections.sort(sectionList);
-      sections = new String[sectionList.size()];
-      sectionList.toArray(sections);
-    }
-  }
-
-  /**
-   * Returns for the given i (position in the entity list) the corresponding
-   * section.
-   *
-   * @param i the position in the entity list
-   * @return the corresponding section of the entity
-   */
-  protected String getSectionForEntity(int i) {
-    String str = null;
-    str = entities.get(i).getID().toString();
-    return str != null ? str.substring(0, 1).toUpperCase() : null;
   }
 
   @Override
   public int getCount() {
-    return entities.size();
+    return entities.size() + sections.size();
   }
 
   @Override
   public Object getItem(int arg0) {
-    return entities.get(arg0);
+    String sec = sections.get(arg0);
+    if (sec == null)
+      return entities.get(arg0);
+    else
+      return sec;
   }
 
   @Override
@@ -118,82 +84,111 @@ public class EntityListAdapter extends BaseAdapter implements SectionIndexer {
   }
 
   /**
-   * Returns the entities of the adapter.
-   *
-   * @return the entities
+   * The given entity list will be used to create a section sparse array and
+   * an array for the entities.
+   * 
+   * @param entities the entities 
    */
-  public List getEntities() {
-    return entities;
+  public void setEntities(List<Entity> entities) {
+    if (entities == null)
+      return;
+    
+    Collections.sort(entities, getComparator());
+    
+    int count = 0;
+    for (int i = 0; i < entities.size(); i++) {
+      Entity e = entities.get(i);
+      String section = getSection(e);
+      if (sections.indexOfValue(section) < 0) {
+        sections.put(count, section);
+        this.entities.put(++count, entities.get(i));
+      } else {
+        this.entities.put(count, entities.get(i));
+      }
+      count++;
+    }
   }
-
+  
   /**
-   * Replaces the entities of the adapter
-   *
-   * @param entities the entities
+   * Returns the section for an entity, used in the section creation process.
+   * 
+   * @param e the entity
+   * @return the corresponding section
    */
-  public void setResults(List entities) {
-    this.entities = entities != null ? entities : new ArrayList<Entity>();
-    createSections();
+  protected String getSection(Entity e) {
+    String str = e.getTableName();
+    if (str != null)
+      str = str.substring(0, 1);
+    else
+      str = "";
+    return str;
   }
+  
 
   @Override
   public View getView(int position, View convertview, ViewGroup parent) {
     LayoutInflater inflater = (LayoutInflater) this.context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-    View row = inflater.inflate(R.layout.fragment_entity_row, parent, false);
-    TextView title = (TextView) row.findViewById(R.id.entity_row_title);
-    TextView description = (TextView) row.findViewById(R.id.entity_row_description);
-    setTextViewContent(title, description, entities.get(position));
+    View row = inflater.inflate(R.layout.fragment_section_row, parent, false);
+    
+    if (isSection(position)) {
+      setSectionView(row, position);
+    } else {
+      setEntityView(row, position);
+    }
+    
     return row;
   }
   
   /**
-   * Sets the text of the given title and description text views.
+   * Sets the view for the section.
    * 
-   * @param title the title text view
-   * @param description the description view
-   * @param e the entity which contains the content
+   * @param row the view which contains the section view
+   * @param pos the position of the section
    */
-  protected void setTextViewContent(TextView title, TextView description, Entity e) {
-    title.setText(e.getTableName());
-    description.setText(e.getID().toString());
+  protected void setSectionView(View row, int pos) {
+    String sec = sections.get(pos);
+    row.setBackgroundColor(context.getResources().getColor(R.color.light_gray));
+    if (sec != null) {
+      TextView header = (TextView) row.findViewById(R.id.section_header);
+      header.setText(sec);
+      header.setVisibility(View.VISIBLE);
+    }
   }
   
   /**
-   * Returns the exiting sections.
-   *
-   * @return the sections
+   * Sets the view for the entity.
+   * 
+   * @param row the view which contains the entity views
+   * @param pos the position of the entity
    */
-  public Object[] getSections() {
-    return sections;
-  }
-
-  /**
-   * Returns for the given section id the corresponding position of the first
-   * element for that section.
-   *
-   * @param arg0 the section id
-   * @return the position
-   */
-  public int getPositionForSection(int arg0) {
-    return sectionIndexes.get(sections[arg0]);
-  }
-
-  /**
-   * Returns the section for the given position in the entities list.
-   *
-   * @param arg0 the position
-   * @return the section
-   */
-  public int getSectionForPosition(int arg0) {
-    String s = getSectionForEntity(arg0);
-    boolean found = false;
-    int pos = 0;
-    for (int i = 0; i < sections.length && !found; i++) {
-      if (sections[i].equalsIgnoreCase(s)) {
-        found = true;
-        pos = i;
-      }
+  protected void setEntityView(View row, int pos) {
+    Entity e = entities.get(pos);
+    if (e != null) {
+      TextView title = (TextView) row.findViewById(R.id.entity_title);
+      title.setText(e.getTableName());
+      title.setVisibility(View.VISIBLE);
+      TextView desc = (TextView) row.findViewById(R.id.entity_description);
+      desc.setText(e.getID().toString());
+      desc.setVisibility(View.VISIBLE);
     }
-    return pos;
+  }
+  
+  /**
+   * Checks if the given position is a section.
+   * 
+   * @param pos the position
+   * @return true if it is a section, false otherwise
+   */
+  private boolean isSection(int pos) {
+    return sections.get(pos) != null;
+  }
+  
+  /**
+   * Returns the comparator which will be used to sort the entity list.
+   * 
+   * @return the entity comparator
+   */
+  protected EntityComparator getComparator() {
+    return new EntityComparator();
   }
 }
