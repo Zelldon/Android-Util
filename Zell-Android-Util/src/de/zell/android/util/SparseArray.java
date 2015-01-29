@@ -29,6 +29,20 @@ package de.zell.android.util;
  */
 public class SparseArray<E> extends android.util.SparseArray<E> {
 
+  /**
+   * Returns the current values from the sparse array.
+   * 
+   * @return the values
+   */
+  public Object[] getValues() {
+    final int len = size();
+    Object[] objects = new Object[len];
+    for (int i = 0; i < len; i++) {
+      objects[i] = valueAt(i);
+    }
+    return objects;
+  }
+  
   @Override
   public int indexOfValue(E value) {
     final int count = size();
