@@ -22,26 +22,56 @@ import android.os.Bundle;
 import android.support.v4.app.ListFragment;
 import android.view.View;
 import android.widget.ListView;
-import de.zell.android.util.adapters.EntitySectionListAdapter;
+import de.zell.android.util.adapters.EntityListAdapter;
 import de.zell.android.util.db.Entity;
 import java.util.Arrays;
 import java.util.List;
 
 /**
- * Represents 
+ * Represents an abstract EntityListFragment which provides
+ * some list fragment functionality and also defines some methods
+ * to create a good looking sectional list fragment.
+ * 
  * @author Christopher Zell <zelldon91@googlemail.com>
  */
 public abstract class EntityListFragment extends ListFragment {
   
-  
+  /**
+   * The argument key for the entity url.
+   */
   public static final String ARG_ENTITIES_URL = "entities.url";
+  
+  /**
+   * The tag key for the entities content.
+   */
   private static final String TAG_ENTITIES_CONTENT = "entities.content";
   
+  /**
+   * The index of the current showed entity.
+   */
   private int index = -1;
+  
+  /**
+   * The top of the list view.
+   */
   private int top = 0;
+  
+  /**
+   * The url which identifies the content of the entities. 
+   */
   private String url;
+  
+  /**
+   * The list of entities which are showed in the list fragment.
+   */
   protected List<Entity> entities = null;
   
+  /**
+   * Returns the url which identifies the content of the entities.
+   * The url is used to download the content.
+   * 
+   * @return the url
+   */
   public String getURL() {
     return url;
   }
@@ -78,7 +108,7 @@ public abstract class EntityListFragment extends ListFragment {
         entities = Arrays.asList(e);
     }
 
-    EntitySectionListAdapter adapter = getEntityListAdapter(getActivity());
+    EntityListAdapter adapter = getEntityListAdapter(getActivity());
     
     if (entities == null) {
       url = (String) savedInstanceState.getSerializable(ARG_ENTITIES_URL);
@@ -110,14 +140,39 @@ public abstract class EntityListFragment extends ListFragment {
                               entities.toArray(new Entity[entities.size()]));
   }
   
-  
-  protected abstract void onEntityClick(Entity e);
-  protected abstract void onSectionClick(Object o);
   /**
-   * Database or Downloading stuff.
+   * The method is called if the element, which was clicked in the list fragment,
+   * was an entity.
+   * 
+   * @param e the entity which was clicked
+   */
+  protected abstract void onEntityClick(Entity e);
+  
+  /**
+   * The method is called if the element, which was clicked in the list fragment,
+   * was a section.
+   * 
+   * @param o the section which was clicked
+   */
+  protected abstract void onSectionClick(Object o);
+  
+  /**
+   * Contains the functionality to load the entities into
+   * the current list adapter.
+   * 
+   * Could contain an async task to load the content from a web resource
+   * or load content from a database.
    */
   protected abstract void loadEntities();
-  protected abstract EntitySectionListAdapter getEntityListAdapter(Context ctx);
+  
+  /**
+   * Returns the EntityListAdapter implementation which should be used for 
+   * the list fragment.
+   * 
+   * @param ctx the application context
+   * @return the list adapter which should be used
+   */
+  protected abstract EntityListAdapter getEntityListAdapter(Context ctx);
   
   
   
