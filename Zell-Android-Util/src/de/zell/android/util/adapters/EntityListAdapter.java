@@ -31,8 +31,8 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * The EntitySectionListAdapter to display each single entity inside
- * of a sectionalised ListView.
+ * The EntitySectionListAdapter to display each single entity inside of a
+ * sectionalised ListView.
  *
  * @author Christopher Zell <zelldon91@googlemail.com>
  */
@@ -42,17 +42,15 @@ public class EntityListAdapter extends BaseAdapter {
    * The entities.
    */
   protected SparseArray<Entity> entities;
-  
   /**
    * Contains the sections.
    */
   protected SparseArray<String> sections;
-  
   /**
    * The application context.
    */
   private Context context;
-  
+
   /**
    * The ctor of the EntitySectionListAdapter.
    *
@@ -72,10 +70,11 @@ public class EntityListAdapter extends BaseAdapter {
   @Override
   public Object getItem(int arg0) {
     String sec = sections.get(arg0);
-    if (sec == null)
+    if (sec == null) {
       return entities.get(arg0);
-    else
+    } else {
       return sec;
+    }
   }
 
   @Override
@@ -84,17 +83,18 @@ public class EntityListAdapter extends BaseAdapter {
   }
 
   /**
-   * The given entity list will be used to create a section sparse array and
-   * an array for the entities.
-   * 
-   * @param entities the entities 
+   * The given entity list will be used to create a section sparse array and an
+   * array for the entities.
+   *
+   * @param entities the entities
    */
   public void setEntities(List<Entity> entities) {
-    if (entities == null)
+    if (entities == null) {
       return;
-    
+    }
+
     Collections.sort(entities, getComparator());
-    
+
     int count = 0;
     for (int i = 0; i < entities.size(); i++) {
       Entity e = entities.get(i);
@@ -108,40 +108,40 @@ public class EntityListAdapter extends BaseAdapter {
       count++;
     }
   }
-  
+
   /**
    * Returns the section for an entity, used in the section creation process.
-   * 
+   *
    * @param e the entity
    * @return the corresponding section
    */
   protected String getSection(Entity e) {
     String str = e.getTableName();
-    if (str != null)
+    if (str != null) {
       str = str.substring(0, 1);
-    else
+    } else {
       str = "";
+    }
     return str;
   }
-  
 
   @Override
   public View getView(int position, View convertview, ViewGroup parent) {
     LayoutInflater inflater = (LayoutInflater) this.context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     View row = inflater.inflate(R.layout.fragment_section_row, parent, false);
-    
+
     if (isSection(position)) {
       setSectionView(row, position);
     } else {
       setEntityView(row, position);
     }
-    
+
     return row;
   }
-  
+
   /**
    * Sets the view for the section.
-   * 
+   *
    * @param row the view which contains the section view
    * @param pos the position of the section
    */
@@ -154,10 +154,10 @@ public class EntityListAdapter extends BaseAdapter {
       header.setVisibility(View.VISIBLE);
     }
   }
-  
+
   /**
    * Sets the view for the entity.
-   * 
+   *
    * @param row the view which contains the entity views
    * @param pos the position of the entity
    */
@@ -172,20 +172,20 @@ public class EntityListAdapter extends BaseAdapter {
       desc.setVisibility(View.VISIBLE);
     }
   }
-  
+
   /**
    * Checks if the given position is a section.
-   * 
+   *
    * @param pos the position
    * @return true if it is a section, false otherwise
    */
   private boolean isSection(int pos) {
     return sections.get(pos) != null;
   }
-  
+
   /**
    * Returns the comparator which will be used to sort the entity list.
-   * 
+   *
    * @return the entity comparator
    */
   protected EntityComparator getComparator() {
