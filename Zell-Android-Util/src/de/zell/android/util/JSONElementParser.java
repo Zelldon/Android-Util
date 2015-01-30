@@ -31,6 +31,8 @@ import org.json.JSONObject;
  * The JSONElementParser parse an object and looks for the JSONElement annotation.
  * If the Object contains such an annotation the corresponding field
  * will be added to the JSON object.
+ * Also it is possible to extract a JSONObject to the corresponding Object 
+ * instance.
  * 
  * @see JSONElement
  * @author Christopher Zell <zelldon91@googlemail.com>
@@ -121,6 +123,43 @@ public class JSONElementParser {
     }
     return array;
   }
+  
+  /**
+   * Parses the given JSON object and creates with the
+   * given values and class the corresponding object instance 
+   * which contains the JSON values. The class fields must be annotated
+   * with the JSONElement annotation to get the corresponding JSON object values.
+   * 
+   * @see JSONElement
+   * @param <O> the class type of the instance which will be returned
+   * @param json the JSON object which contains the values
+   * @param c the class of the object
+   * @return the instance with the JSON values from type O
+   */
+  public static <O> O parseJSON(JSONObject json, Class<O> c) {
+    O o = null;
+    try {
+      o = c.newInstance();
+      Field fields[] = c.getDeclaredFields();
+      for (Field f : fields) {
+        f.setAccessible(true);
+        JSONElement eleAnno = f.getAnnotation(JSONElement.class);
+        if (eleAnno != null) {
+          Object value = json.opt(eleAnno.name());
+          if (value != null) {
+            f.set(o, f.getType().cast(value));
+          }
+        }
+        f.setAccessible(false);
+      }
+    } catch (InstantiationException ex) {
+      Logger.getLogger(JSONElementParser.class.getName()).log(Level.SEVERE, null, ex);
+    } catch (IllegalAccessException ex) {
+      Logger.getLogger(JSONElementParser.class.getName()).log(Level.SEVERE, null, ex);
+    }
+    return o;
+  }
+  
 
   /**
    * Checks whether the given class is a wrapper of a primitive type.
