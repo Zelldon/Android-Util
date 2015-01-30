@@ -53,7 +53,7 @@ public class JSONUnmarshaller {
    * @param c the class of the object
    * @return the instance with the JSON values from type O
    */
-  public static <O> O parseJSON(JSONObject json, Class<O> c) {
+  public static <O> O unmarshall(JSONObject json, Class<O> c) {
     O o = null;
     try {
       o = c.newInstance();
@@ -102,7 +102,7 @@ public class JSONUnmarshaller {
       for (int i = 0; i < len; i++) {
         JSONObject obj = array.optJSONObject(i);
         if (obj != null) {
-          c.add(parseJSON(obj, listType));
+          c.add(unmarshall(obj, listType));
         }
       }
       try {

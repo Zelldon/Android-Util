@@ -46,7 +46,7 @@ public class JSONMarshaller {
    * @param o the object which will be parsed
    * @return the corresponding JSONObject
    */
-  public static JSONObject parseObject(Object o) {
+  public static JSONObject marshall(Object o) {
     if (o == null) {
       return null;
     }
@@ -86,10 +86,10 @@ public class JSONMarshaller {
           if (!fieldClass.isPrimitive() && !isPrimitveWrapper(fieldClass)
                   && fieldClass != String.class && !isCollection(fieldClass)
                   && !isMap(fieldClass)) {
-            jsonValue = parseObject(fieldValue);
+            jsonValue = marshall(fieldValue);
           } else {
             if (isCollection(fieldClass)) {
-              jsonValue = parseCollection((Collection) fieldValue);
+              jsonValue = marshall((Collection) fieldValue);
             } else if (isMap(fieldClass)) {
               jsonValue = new JSONObject((Map) fieldValue);
             } else {
@@ -116,11 +116,11 @@ public class JSONMarshaller {
    * @param c the collection
    * @return the JSONArray
    */
-  public static JSONArray parseCollection(Collection c) {
+  public static JSONArray marshall(Collection c) {
     JSONArray array = new JSONArray();
     Iterator i = c.iterator();
     while (i.hasNext()) {
-      array.put(parseObject(i.next()));
+      array.put(marshall(i.next()));
     }
     return array;
   }
