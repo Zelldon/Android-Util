@@ -24,7 +24,6 @@ import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.view.Menu;
@@ -33,6 +32,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.*;
 import de.zell.android.util.R;
+import de.zell.android.util.fragments.FragmentReplacer;
 
 /**
  * Represents the main navigation activity with a navigation drawer. On the left
@@ -234,16 +234,9 @@ public abstract class MainNavigationActivity extends FragmentActivity {
      */
     public void selectItem(int position) {
       // update the main content by replacing fragments
-      FragmentManager fragmentManager = getSupportFragmentManager();
-      Fragment old = fragmentManager.findFragmentById(R.id.content_frame);
-      FragmentTransaction trx = fragmentManager.beginTransaction();
-      if (old != null) {
-        trx.remove(old);
-      }
-
-      trx.replace(R.id.content_frame, getFragmentForChoice(position))
-              .addToBackStack(null) 
-              .commit();
+      FragmentReplacer.replace(getSupportFragmentManager(),
+                               getFragmentForChoice(position),
+                               FragmentReplacer.MAIN_CONTENT);
       // update selected item and title, then close the drawer
       mDrawerList.setItemChecked(position, true);
       setTitle(applications[position]);
