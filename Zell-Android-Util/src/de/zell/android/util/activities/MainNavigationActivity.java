@@ -125,6 +125,16 @@ public abstract class MainNavigationActivity extends FragmentActivity {
   }
   
   /**
+   * Returns the progress bar which could be used to show 
+   * a progress of an async task or other task.
+   * 
+   * @return the main progress bar
+   */
+  public ProgressBar getProgressBar() {
+    return (ProgressBar) this.findViewById(R.id.main_progress_bar);
+  }
+  
+  /**
    * Creates a action bar drawer toggle object, which will be used
    * for the toggling of the drawer.
    * 
