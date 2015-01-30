@@ -45,6 +45,21 @@ public class FragmentReplacer {
    * @param id the view which gets the new fragment
    */
   public static void replace(FragmentManager fgrMgr, Fragment frg, int id) {
+    replace(fgrMgr, frg, id, true);
+  }
+  
+  /**
+   * Replaces the existing fragment on the given view with the new one.
+   * If no fragment exists on the view the fragment is only placed.
+   * The view is identified via the layout id. The backstack flag enables
+   * fragment stacking.
+   * 
+   * @param fgrMgr the fragment manager which is used to replace the frag
+   * @param frg the new fragment which should be placed
+   * @param id the view which gets the new fragment
+   * @param backstack the flag which enables the backstack
+   */
+  public static void replace(FragmentManager fgrMgr, Fragment frg, int id, boolean backstack) {
     if (fgrMgr == null || frg == null || id <= 0)
       throw new IllegalArgumentException();
     
@@ -53,6 +68,9 @@ public class FragmentReplacer {
     if (old != null) {
       trx.remove(old);
     }
-    trx.replace(id, frg).addToBackStack(null).commit();
+    trx.replace(id, frg);
+    if (backstack)
+      trx.addToBackStack(null);
+    trx.commit();
   }
 }
