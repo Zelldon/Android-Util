@@ -83,7 +83,7 @@ public class JSONMarshaller {
         Object fieldValue = f.get(o);
         if (fieldValue != null) {
           Object jsonValue;
-          if (!fieldClass.isPrimitive() && !isPrimitveWrapper(fieldClass)
+          if (!fieldClass.isPrimitive() && !isPrimitiveWrapper(fieldClass)
                   && fieldClass != String.class && !isCollection(fieldClass)
                   && !isMap(fieldClass)) {
             jsonValue = marshall(fieldValue);
@@ -131,7 +131,7 @@ public class JSONMarshaller {
    * @param c the class
    * @return true if is a wrapper, false otherwise
    */
-  protected static boolean isPrimitveWrapper(Class c) {
+  protected static boolean isPrimitiveWrapper(Class c) {
     if (c == Byte.class || c == Short.class || c == Integer.class
             || c == Long.class || c == Float.class || c == Double.class
             || c == Boolean.class || c == Character.class) {
