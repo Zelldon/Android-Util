@@ -17,7 +17,7 @@
  */
 package de.zell.android.util.device;
 
-import de.zell.android.util.JSONElement;
+import de.zell.android.util.json.JSONElement;
 import java.io.Serializable;
 
 
