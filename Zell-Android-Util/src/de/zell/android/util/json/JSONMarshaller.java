@@ -18,10 +18,6 @@
 package de.zell.android.util.json;
 
 import java.lang.reflect.Field;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
@@ -32,18 +28,19 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 /**
- * The JSONElementParser parse an object and looks for the JSONElement
- * annotation. If the Object contains such an annotation the corresponding field
- * will be added to the JSON object. Also it is possible to extract a JSONObject
- * to the corresponding Object instance.
+ * The JSONMarshaller marshalls the given object to a JSONObject object.
+ * The given object should contain JSONElement annotations.
+ * If the Object contains such an annotation the corresponding field
+ * will be added to the JSON object.
  *
  * @see JSONElement
+ * @see JSONUnmarshaller
  * @author Christopher Zell <zelldon91@googlemail.com>
  */
-public class JSONElementParser {
+public class JSONMarshaller {
 
   /**
-   * Parses the object and creates an JSON from the fields of the object which
+   * Marshalls the object and creates an JSON from the fields of the object which
    * are marked with the JSONElement annotation.
    *
    * @param o the object which will be parsed
@@ -102,19 +99,19 @@ public class JSONElementParser {
           try {
             json.put(jsonAno.name(), jsonValue);
           } catch (JSONException ex) {
-            Logger.getLogger(JSONElementParser.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(JSONMarshaller.class.getName()).log(Level.SEVERE, null, ex);
           }
         }
       } catch (IllegalAccessException ex) {
-        Logger.getLogger(JSONElementParser.class.getName()).log(Level.SEVERE, null, ex);
+        Logger.getLogger(JSONMarshaller.class.getName()).log(Level.SEVERE, null, ex);
       } catch (IllegalArgumentException ex) {
-        Logger.getLogger(JSONElementParser.class.getName()).log(Level.SEVERE, null, ex);
+        Logger.getLogger(JSONMarshaller.class.getName()).log(Level.SEVERE, null, ex);
       }
     }
   }
 
   /**
-   * Parse a collection object and returns a corresponding JSONArray Object.
+   * Marshalls a collection object and returns a corresponding JSONArray Object.
    *
    * @param c the collection
    * @return the JSONArray
@@ -127,89 +124,14 @@ public class JSONElementParser {
     }
     return array;
   }
-
-  /**
-   * Parses the given JSON object and creates with the given values and class
-   * the corresponding object instance which contains the JSON values. The class
-   * fields must be annotated with the JSONElement annotation to get the
-   * corresponding JSON object values.
-   *
-   * @see JSONElement
-   * @param <O> the class type of the instance which will be returned
-   * @param json the JSON object which contains the values
-   * @param c the class of the object
-   * @return the instance with the JSON values from type O
-   */
-  public static <O> O parseJSON(JSONObject json, Class<O> c) {
-    O o = null;
-    try {
-      o = c.newInstance();
-      Field fields[] = c.getDeclaredFields();
-      for (Field f : fields) {
-        f.setAccessible(true);
-        JSONElement eleAnno = f.getAnnotation(JSONElement.class);
-        if (eleAnno != null) {
-          Object value = json.opt(eleAnno.name());
-          if (value != null) {
-            if (value instanceof JSONArray)
-              value = parseJSON((JSONArray) value, f, o);
-            
-            f.set(o, f.getType().cast(value));
-          }
-        }
-        f.setAccessible(false);
-      }
-    } catch (InstantiationException ex) {
-      Logger.getLogger(JSONElementParser.class.getName()).log(Level.SEVERE, null, ex);
-    } catch (IllegalAccessException ex) {
-      Logger.getLogger(JSONElementParser.class.getName()).log(Level.SEVERE, null, ex);
-    }
-    return o;
-  }
-
-  /**
-   * Parse a JSON array and returns a corresponding collection object.
-   * The JSON objects in the array are parsed recursively by the public parseJSON method.
-   * 
-   * @param array the array which contains the values
-   * @param f the field which should is the corresponding collection
-   * @param instance the instance of the class which will be filled with the 
-   *                 values of the JSON objects
-   * @return the created collection which contains the JSON array values
-   */
-  private static Object parseJSON(JSONArray array, Field f, Object instance) {
-    final int len = array.length();
-    Class<?> type = f.getType();
-    Type genType = f.getGenericType();
-    Collection c = null;
-    if (isCollection(type) && genType instanceof ParameterizedType) {
-      Class<?> listType = (Class<?>) ((ParameterizedType) genType).getActualTypeArguments()[0];
-      c = new ArrayList();
-
-      for (int i = 0; i < len; i++) {
-        JSONObject obj = array.optJSONObject(i);
-        if (obj != null) {
-          c.add(parseJSON(obj, listType));
-        }
-      }
-      try {
-        f.set(instance, c);
-      } catch (IllegalAccessException ex) {
-        Logger.getLogger(JSONElementParser.class.getName()).log(Level.SEVERE, null, ex);
-      } catch (IllegalArgumentException ex) {
-        Logger.getLogger(JSONElementParser.class.getName()).log(Level.SEVERE, null, ex);
-      }
-    } 
-    return c;
-  }
-
+  
   /**
    * Checks whether the given class is a wrapper of a primitive type.
    *
    * @param c the class
    * @return true if is a wrapper, false otherwise
    */
-  private static boolean isPrimitveWrapper(Class c) {
+  protected static boolean isPrimitveWrapper(Class c) {
     if (c == Byte.class || c == Short.class || c == Integer.class
             || c == Long.class || c == Float.class || c == Double.class
             || c == Boolean.class || c == Character.class) {
@@ -224,7 +146,7 @@ public class JSONElementParser {
    * @param c the class
    * @return true if is a collection, false otherwise
    */
-  private static boolean isCollection(Class c) {
+  protected static boolean isCollection(Class c) {
     return Collection.class.isAssignableFrom(c);
   }
 
@@ -234,7 +156,8 @@ public class JSONElementParser {
    * @param c the class
    * @return true if is a map, false otherwise
    */
-  private static boolean isMap(Class c) {
+  protected static boolean isMap(Class c) {
     return Map.class.isAssignableFrom(c);
   }
+  
 }
