@@ -17,8 +17,11 @@
  */
 package de.zell.android.util.async;
 
+import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
+import android.view.View;
+import android.widget.ProgressBar;
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -93,6 +96,13 @@ public class AsyncGETRequester extends AsyncTask<GetRequestInfo, Void, List<JSON
     this.job = job;
   }
 
+  ProgressBar bar;
+  
+  public void showProgress(ProgressBar bar) {
+    this.bar = bar;
+  }
+          
+  
   /**
    * The ctor of the AsyncJSONSender
    *
@@ -105,10 +115,18 @@ public class AsyncGETRequester extends AsyncTask<GetRequestInfo, Void, List<JSON
   }
 
   @Override
+  protected void onPreExecute() {
+    if (bar != null)
+      bar.setVisibility(View.VISIBLE);
+    super.onPreExecute();
+  }
+
+  @Override
   protected List<JSONObject> doInBackground(GetRequestInfo... urls) {
     List<JSONObject> result = new ArrayList<JSONObject>();
     if (urls != null) {
-      for (int i = 0; i < urls.length; i++) {
+      final int len = urls.length;
+      for (int i = 0; i < len; i++) {
         String url = urls[i].getUrl();
         if (url != null) {
           HttpGet get = new HttpGet(url);
@@ -208,6 +226,8 @@ public class AsyncGETRequester extends AsyncTask<GetRequestInfo, Void, List<JSON
         job.doJob(result.get(i));
       }
     }
+    if (bar != null)
+      bar.setVisibility(View.GONE);
     super.onPostExecute(result);
   }
 
