@@ -88,6 +88,11 @@ public class AsyncGETRequester extends AsyncTask<GetRequestInfo, Void, List<JSON
   private static final String CONTENT_ENCODING_GZIP = "gzip";
   
   /**
+   * The progress bar which shows the current progress of the async task.
+   */
+  private ProgressBar bar;
+  
+  /**
    * The ctor of the AsyncJSONSender
    *
    * @param job the job which will be executed after sending the objects
@@ -96,8 +101,12 @@ public class AsyncGETRequester extends AsyncTask<GetRequestInfo, Void, List<JSON
     this.job = job;
   }
 
-  ProgressBar bar;
   
+  /**
+   * Enables the progress bar with the given bar.
+   * 
+   * @param bar the bar which should be used to show the progress
+   */
   public void showProgress(ProgressBar bar) {
     this.bar = bar;
   }
@@ -116,8 +125,10 @@ public class AsyncGETRequester extends AsyncTask<GetRequestInfo, Void, List<JSON
 
   @Override
   protected void onPreExecute() {
-    if (bar != null)
+    if (bar != null) {
+      bar.setIndeterminate(true);
       bar.setVisibility(View.VISIBLE);
+    }
     super.onPreExecute();
   }
 
