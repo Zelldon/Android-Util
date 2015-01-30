@@ -167,6 +167,16 @@ public class JSONElementParser {
     return o;
   }
 
+  /**
+   * Parse a JSON array and returns a corresponding collection object.
+   * The JSON objects in the array are parsed recursively by the public parseJSON method.
+   * 
+   * @param array the array which contains the values
+   * @param f the field which should is the corresponding collection
+   * @param instance the instance of the class which will be filled with the 
+   *                 values of the JSON objects
+   * @return the created collection which contains the JSON array values
+   */
   private static Object parseJSON(JSONArray array, Field f, Object instance) {
     final int len = array.length();
     Class<?> type = f.getType();
