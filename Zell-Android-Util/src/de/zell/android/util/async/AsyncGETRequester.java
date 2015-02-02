@@ -1,10 +1,10 @@
 /*
  * Copyright (C) 2015 Christopher Zell <zelldon91@googlemail.com>
  *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -12,12 +12,10 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 package de.zell.android.util.async;
 
-import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
 import android.view.View;
@@ -86,12 +84,12 @@ public class AsyncGETRequester extends AsyncTask<GetRequestInfo, Void, List<JSON
    * The gzip header value for the Content Encoding Header.
    */
   private static final String CONTENT_ENCODING_GZIP = "gzip";
-  
+
   /**
    * The progress bar which shows the current progress of the async task.
    */
   private ProgressBar bar;
-  
+
   /**
    * The ctor of the AsyncJSONSender
    *
@@ -101,17 +99,15 @@ public class AsyncGETRequester extends AsyncTask<GetRequestInfo, Void, List<JSON
     this.job = job;
   }
 
-  
   /**
    * Enables the progress bar with the given bar.
-   * 
+   *
    * @param bar the bar which should be used to show the progress
    */
   public void showProgress(ProgressBar bar) {
     this.bar = bar;
   }
-          
-  
+
   /**
    * The ctor of the AsyncJSONSender
    *
@@ -160,31 +156,35 @@ public class AsyncGETRequester extends AsyncTask<GetRequestInfo, Void, List<JSON
     HttpClient client = new DefaultHttpClient();
     try {
       HttpResponse response = client.execute(get);
-      int statusCode = response.getStatusLine().getStatusCode();
-      if (response == null || statusCode >= 400) {
-        Log.e(AsyncGETRequester.class.getName(), String.format(ERROR_LOG_MSG, response.getStatusLine().getStatusCode()));
+      if (response == null) {
         job.doExeptionHandling(null);
       } else {
-        if (statusCode != 304) {
-          HttpEntity entity = response.getEntity();
-          if (entity != null && entity.getContentType().getValue().contains(CONTENT_TYPE)) {
-            try {
-              String jsonStr = extractEntityContent(entity);
-              JSONObject object = new JSONObject(jsonStr);
-              result.add(object);
-            } catch (JSONException ex) {
-              Log.e(AsyncGETRequester.class.getName(), EXECEPTION_LOG_MSG, ex);
+        int statusCode = response.getStatusLine().getStatusCode();
+        if (statusCode >= 400) {
+          Log.e(AsyncGETRequester.class.getName(), String.format(ERROR_LOG_MSG, response.getStatusLine().getStatusCode()));
+          job.doExeptionHandling(null);
+        } else {
+          if (statusCode != 304) {
+            HttpEntity entity = response.getEntity();
+            if (entity != null && entity.getContentType().getValue().contains(CONTENT_TYPE)) {
+              try {
+                String jsonStr = extractEntityContent(entity);
+                JSONObject object = new JSONObject(jsonStr);
+                result.add(object);
+              } catch (JSONException ex) {
+                Log.e(AsyncGETRequester.class.getName(), EXECEPTION_LOG_MSG, ex);
+              }
             }
           }
-        }
-        Header responseEtag = response.getFirstHeader(HEADER_ETAG);
-        if (responseEtag != null) {
-          String newEtag = responseEtag.getValue();
-          Header ifNoneMatchHeader = get.getFirstHeader(HEADER_IF_NONE_MATCH);
-          if (newEtag != null
-                  && (ifNoneMatchHeader == null
-                  || !newEtag.equalsIgnoreCase(ifNoneMatchHeader.getValue()))) {
-            job.handleNewEtag(get.getURI().toString(), newEtag);
+          Header responseEtag = response.getFirstHeader(HEADER_ETAG);
+          if (responseEtag != null) {
+            String newEtag = responseEtag.getValue();
+            Header ifNoneMatchHeader = get.getFirstHeader(HEADER_IF_NONE_MATCH);
+            if (newEtag != null
+                    && (ifNoneMatchHeader == null
+                    || !newEtag.equalsIgnoreCase(ifNoneMatchHeader.getValue()))) {
+              job.handleNewEtag(get.getURI().toString(), newEtag);
+            }
           }
         }
       }
@@ -195,10 +195,10 @@ public class AsyncGETRequester extends AsyncTask<GetRequestInfo, Void, List<JSON
   }
 
   /**
-   * Extracts the http entity and returns the content as string.
-   * If the entity is encoded with gzip the zip will be decoded.
-   * 
-   * @param entity  the entity which will be extracted
+   * Extracts the http entity and returns the content as string. If the entity
+   * is encoded with gzip the zip will be decoded.
+   *
+   * @param entity the entity which will be extracted
    * @return the entity content as string
    */
   private String extractEntityContent(HttpEntity entity) {
@@ -210,7 +210,7 @@ public class AsyncGETRequester extends AsyncTask<GetRequestInfo, Void, List<JSON
         zis = new GZIPInputStream(new BufferedInputStream(entity.getContent()));
         StringBuilder builder = new StringBuilder();
         int decompressedSize;
-        while ((decompressedSize = zis.read(str, 0, str.length)) != -1 ) {
+        while ((decompressedSize = zis.read(str, 0, str.length)) != -1) {
           builder.append(new String(str, 0, decompressedSize, HTTP.UTF_8));
         }
         content = builder.toString();
@@ -221,8 +221,9 @@ public class AsyncGETRequester extends AsyncTask<GetRequestInfo, Void, List<JSON
       Log.e(AsyncGETRequester.class.getName(), IOException.class.getName(), ex);
     } finally {
       try {
-        if (zis != null)
+        if (zis != null) {
           zis.close();
+        }
       } catch (IOException ex) {
         Log.e(AsyncGETRequester.class.getName(), IOException.class.getName(), ex);
       }
@@ -232,13 +233,14 @@ public class AsyncGETRequester extends AsyncTask<GetRequestInfo, Void, List<JSON
 
   @Override
   protected void onPostExecute(List<JSONObject> result) {
-    for (int i = 0; i < result.size(); i++) {
+    for (JSONObject json : result) {
       if (job != null) {
-        job.doJob(result.get(i));
+        job.doJob(json);
       }
     }
-    if (bar != null)
+    if (bar != null) {
       bar.setVisibility(View.GONE);
+    }
     super.onPostExecute(result);
   }
 
@@ -251,7 +253,7 @@ public class AsyncGETRequester extends AsyncTask<GetRequestInfo, Void, List<JSON
     /**
      * The job which will be done after the send was successful.
      *
-     * @param jsonResult the result of the sending
+     * @param response the result of the sending
      */
     public void doJob(JSONObject response);
 
@@ -265,7 +267,7 @@ public class AsyncGETRequester extends AsyncTask<GetRequestInfo, Void, List<JSON
     /**
      * Method should handle the new etag.
      *
-     * @param oldEtag the corresponding url
+     * @param url the corresponding url
      * @param newEtag the new etag
      */
     public void handleNewEtag(String url, String newEtag);
