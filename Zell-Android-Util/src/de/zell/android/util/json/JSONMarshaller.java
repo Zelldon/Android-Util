@@ -1,10 +1,10 @@
 /*
  * Copyright (C) 2015 Christopher Zell <zelldon91@googlemail.com>
  *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -12,8 +12,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 package de.zell.android.util.json;
 
@@ -53,8 +52,7 @@ public class JSONMarshaller {
 
     JSONObject json = new JSONObject();
     Field[] fields = o.getClass().getDeclaredFields();
-    for (int i = 0; i < fields.length; i++) {
-      Field f = fields[i];
+    for (Field f : fields) {
       boolean accessible = f.isAccessible();
       if (!accessible) {
         f.setAccessible(true);
@@ -132,12 +130,9 @@ public class JSONMarshaller {
    * @return true if is a wrapper, false otherwise
    */
   protected static boolean isPrimitiveWrapper(Class c) {
-    if (c == Byte.class || c == Short.class || c == Integer.class
+    return c == Byte.class || c == Short.class || c == Integer.class
             || c == Long.class || c == Float.class || c == Double.class
-            || c == Boolean.class || c == Character.class) {
-      return true;
-    }
-    return false;
+            || c == Boolean.class || c == Character.class;
   }
 
   /**

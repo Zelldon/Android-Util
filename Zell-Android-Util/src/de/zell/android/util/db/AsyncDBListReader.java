@@ -1,10 +1,10 @@
 /*
  * Copyright (C) 2015 Christopher Zell <zelldon91@googlemail.com>
  *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -12,8 +12,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 package de.zell.android.util.db;
 
@@ -40,17 +39,17 @@ public class AsyncDBListReader extends AsyncTask<SQLiteOpenHelper, Void, List> {
   /**
    * The extractor which will be used to extract the values from the result set.
    */
-  private CursorExtracting extract;
+  private final CursorExtracting extract;
   
   /**
    * The job which will be executed after the SQL query was executed.
    */
-  private PostExecuteJob postJob;
+  private final PostExecuteJob postJob;
 
   /**
    * Contains all necessary informations for the SQL request.
    */
-  private SQLQuery query;
+  private final SQLQuery query;
   
   /** 
    * The ctor to create the AsyncDBListReader object to read
