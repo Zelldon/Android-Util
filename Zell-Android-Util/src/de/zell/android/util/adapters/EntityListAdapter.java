@@ -48,7 +48,7 @@ public class EntityListAdapter extends BaseAdapter {
   /**
    * The application context.
    */
-  private Context context;
+  private final Context context;
 
   /**
    * The ctor of the EntitySectionListAdapter.
@@ -95,14 +95,13 @@ public class EntityListAdapter extends BaseAdapter {
     Collections.sort(entities, getComparator());
 
     int count = 0;
-    for (int i = 0; i < entities.size(); i++) {
-      Entity e = entities.get(i);
+    for (Entity e : entities) {
       String section = getSection(e);
       if (sections.indexOfValue(section) < 0) {
         sections.put(count, section);
-        this.entities.put(++count, entities.get(i));
+        this.entities.put(++count, e);
       } else {
-        this.entities.put(count, entities.get(i));
+        this.entities.put(count, e);
       }
       count++;
     }
