@@ -141,8 +141,9 @@ public abstract class EntityListFragment extends ListFragment {
   @Override
   public void onSaveInstanceState(Bundle outState) {
     super.onSaveInstanceState(outState);
-    outState.putSerializable(TAG_ENTITIES_CONTENT,
-            entities.toArray(new Entity[entities.size()]));
+    if (entities != null)
+      outState.putSerializable(TAG_ENTITIES_CONTENT,
+                entities.toArray(new Entity[entities.size()]));
   }
 
   /**
