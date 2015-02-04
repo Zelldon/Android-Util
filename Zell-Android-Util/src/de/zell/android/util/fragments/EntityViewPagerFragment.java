@@ -100,6 +100,13 @@ public abstract class EntityViewPagerFragment extends Fragment {
     return root;
   }
   
+  
+  @Override
+  public void onSaveInstanceState(Bundle outState) {
+    super.onSaveInstanceState(outState);
+    outState.putSerializable(TAG_ENTITY_PAGER_FRAGMENT, entity);
+  }
+  
   protected abstract void loadEntity();
   protected abstract FragmentPagerAdapter getPageAdapter(FragmentManager mgr);
   protected abstract void extractEntityInformation();
