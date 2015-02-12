@@ -108,7 +108,8 @@ public abstract class EntityListFragment extends ListFragment {
           loadEntities();
         } 
       }
-      adapter.setEntities(entities);
+      if (entities != null)
+        adapter.setEntities(entities);
       setListAdapter(adapter);
     }
   }
