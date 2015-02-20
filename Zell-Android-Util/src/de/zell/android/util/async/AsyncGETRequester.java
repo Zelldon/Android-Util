@@ -205,7 +205,8 @@ public class AsyncGETRequester extends AsyncTask<GetRequestInfo, Void, List<JSON
     String content = "";
     GZIPInputStream zis = null;
     try {
-      if (entity.getContentEncoding().getValue().contains(CONTENT_ENCODING_GZIP)) {
+      Header encoding = entity.getContentEncoding();
+      if (encoding != null && encoding.getValue().contains(CONTENT_ENCODING_GZIP)) {
         byte str[] = new byte[1024];
         zis = new GZIPInputStream(new BufferedInputStream(entity.getContent()));
         StringBuilder builder = new StringBuilder();
