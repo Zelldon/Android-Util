@@ -23,6 +23,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.util.Log;
 import android.widget.ImageView;
 import de.zell.android.util.R;
@@ -200,9 +201,13 @@ public class AsyncBitmapLoader extends AsyncProgressTask<Integer, Void, Bitmap> 
             b.recycle();
             b = null;
           }
+          int bytes;
+          if (Build.VERSION.SDK_INT >= 19)
+            bytes = b2.getAllocationByteCount();
+          else 
+            bytes = b2.getByteCount();
           Log.d(AsyncBitmapLoader.class.getName(),
-                String.format(ctx.getString(R.string.log_bitmap_alloc),
-                              b2.getAllocationByteCount()));
+                String.format(ctx.getString(R.string.log_bitmap_alloc), bytes));
           return b2;
         }
       }
