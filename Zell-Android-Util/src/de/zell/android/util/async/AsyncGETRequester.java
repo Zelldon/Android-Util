@@ -16,10 +16,7 @@
  */
 package de.zell.android.util.async;
 
-import android.os.AsyncTask;
 import android.util.Log;
-import android.view.View;
-import android.widget.ProgressBar;
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -49,7 +46,7 @@ import org.json.JSONObject;
  *
  * @author Christopher Zell <zelldon91@googlemail.com>
  */
-public class AsyncGETRequester extends AsyncTask<GetRequestInfo, Void, List<JSONObject>> {
+public class AsyncGETRequester extends AsyncProgressTask<GetRequestInfo, Void, List<JSONObject>> {
 
   /**
    * The content type of the objects which will be send.
@@ -66,7 +63,7 @@ public class AsyncGETRequester extends AsyncTask<GetRequestInfo, Void, List<JSON
   /**
    * The job which will be executed after sending the objects.
    */
-  private PostExecuteJob job;
+  private final PostExecuteJob job;
   /**
    * The credentials for basic authentication.
    */
@@ -84,12 +81,7 @@ public class AsyncGETRequester extends AsyncTask<GetRequestInfo, Void, List<JSON
    * The gzip header value for the Content Encoding Header.
    */
   private static final String CONTENT_ENCODING_GZIP = "gzip";
-
-  /**
-   * The progress bar which shows the current progress of the async task.
-   */
-  private ProgressBar bar;
-
+  
   /**
    * The ctor of the AsyncJSONSender
    *
@@ -97,15 +89,6 @@ public class AsyncGETRequester extends AsyncTask<GetRequestInfo, Void, List<JSON
    */
   public AsyncGETRequester(PostExecuteJob job) {
     this.job = job;
-  }
-
-  /**
-   * Enables the progress bar with the given bar.
-   *
-   * @param bar the bar which should be used to show the progress
-   */
-  public void showProgress(ProgressBar bar) {
-    this.bar = bar;
   }
 
   /**
@@ -117,15 +100,6 @@ public class AsyncGETRequester extends AsyncTask<GetRequestInfo, Void, List<JSON
   public AsyncGETRequester(PostExecuteJob job, UsernamePasswordCredentials credentials) {
     this.job = job;
     this.credentials = credentials;
-  }
-
-  @Override
-  protected void onPreExecute() {
-    if (bar != null) {
-      bar.setIndeterminate(true);
-      bar.setVisibility(View.VISIBLE);
-    }
-    super.onPreExecute();
   }
 
   @Override
@@ -238,9 +212,6 @@ public class AsyncGETRequester extends AsyncTask<GetRequestInfo, Void, List<JSON
       if (job != null) {
         job.doJob(json);
       }
-    }
-    if (bar != null) {
-      bar.setVisibility(View.GONE);
     }
     super.onPostExecute(result);
   }

@@ -23,7 +23,6 @@ import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
-import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.ImageView;
 import de.zell.android.util.R;
@@ -39,7 +38,7 @@ import java.lang.ref.WeakReference;
  *
  * @author Christopher Zell <zelldon91@googlemail.com>
  */
-public class AsyncBitmapLoader extends AsyncTask<Integer, Void, Bitmap> {
+public class AsyncBitmapLoader extends AsyncProgressTask<Integer, Void, Bitmap> {
 
   /**
    * The weak reference of the image view which should get the loaded bitmap.
