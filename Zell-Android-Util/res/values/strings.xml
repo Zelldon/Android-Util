@@ -34,4 +34,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     <string name="drawer_close">Close navigation drawer</string>
     <string name="search_submitted">Submitted: %1$s</string>
     <string name="search">Search</string>
+    
+    
+    <!--ASYNC BITMAP LOADER-->
+    <string name="log_bitmap_alloc">Bitmap created, bytes allocated: %1$s</string>
 </resources>
