@@ -45,7 +45,7 @@ public class AsyncBitmapLoader extends AsyncProgressTask<Integer, Void, Bitmap> 
    * The weak reference of the image view which should get the loaded bitmap.
    */
   private final WeakReference<ImageView> imageViewReference;
-  
+
   /**
    * The image drawable resource identifier.
    */
@@ -54,18 +54,18 @@ public class AsyncBitmapLoader extends AsyncProgressTask<Integer, Void, Bitmap> 
    * The application context to get access to the resources.
    */
   private final Context ctx;
-  
+
   /**
    * The ctor to create a asynchronous bitmap loader object.
-   * 
-   * @param imageView the image view which should get the loaded bitmap 
+   *
+   * @param imageView the image view which should get the loaded bitmap
    * @param ctx the application context
    */
   public AsyncBitmapLoader(ImageView imageView, Context ctx) {
     this.imageViewReference = new WeakReference<ImageView>(imageView);
-    this.ctx = ctx; 
+    this.ctx = ctx;
   }
-  
+
   @Override
   protected Bitmap doInBackground(Integer... ids) {
     if (ids.length > 0) {
@@ -95,10 +95,10 @@ public class AsyncBitmapLoader extends AsyncProgressTask<Integer, Void, Bitmap> 
   }
 
   /**
-   * Cancels the asynchronous bitmap loader for the given image view.
-   * Before canceling the data of the task is compared with the given data
-   * if they are equal then the task are not canceled.
-   * 
+   * Cancels the asynchronous bitmap loader for the given image view. Before
+   * canceling the data of the task is compared with the given data if they are
+   * equal then the task are not canceled.
+   *
    * @param data the data of the asynchronous bitmap loader (img res)
    * @param imageView the image view which contains the loader
    * @return true if the task was canceled, false otherwise
@@ -140,7 +140,8 @@ public class AsyncBitmapLoader extends AsyncProgressTask<Integer, Void, Bitmap> 
   }
 
   /**
-   * Represents a bitmap drawable which contains his own asynchronous bitmap loader.
+   * Represents a bitmap drawable which contains his own asynchronous bitmap
+   * loader.
    *
    * @author Christopher Zell <zelldon91@googlemail.com>
    */
@@ -153,7 +154,7 @@ public class AsyncBitmapLoader extends AsyncProgressTask<Integer, Void, Bitmap> 
 
     /**
      * The ctor to create an AsyncDrawable object.
-     * 
+     *
      * @param res the application resources
      * @param bitmap the bitmap for the async drawable
      * @param bitmapLoader the bitmap loader which is used for the drawable
@@ -166,16 +167,17 @@ public class AsyncBitmapLoader extends AsyncProgressTask<Integer, Void, Bitmap> 
     }
 
     /**
-     * Returns the corresponding async bitmap loader if its exists
-     * if not null will be returned.
-     * 
+     * Returns the corresponding async bitmap loader if its exists if not null
+     * will be returned.
+     *
      * @return the async bitmap loader or null
      */
     public AsyncBitmapLoader getAsyncBitmapLoader() {
-      if (asyncBitmapLoader != null)
+      if (asyncBitmapLoader != null) {
         return asyncBitmapLoader.get();
-      else 
+      } else {
         return null;
+      }
     }
   }
 
@@ -201,18 +203,28 @@ public class AsyncBitmapLoader extends AsyncProgressTask<Integer, Void, Bitmap> 
             b.recycle();
             b = null;
           }
-          int bytes;
-          if (Build.VERSION.SDK_INT >= 19)
-            bytes = b2.getAllocationByteCount();
-          else 
-            bytes = b2.getByteCount();
-          Log.d(AsyncBitmapLoader.class.getName(),
-                String.format(ctx.getString(R.string.log_bitmap_alloc), bytes));
+          logAllocationBytes(b2);
           return b2;
         }
       }
     }
     return null;
+  }
+
+  /**
+   * Method to log the allocated bytes by the bitmap.
+   * 
+   * @param b the bitmap which was created
+   */
+  private void logAllocationBytes(Bitmap b) {
+    int bytes;
+    if (Build.VERSION.SDK_INT >= 19) {
+      bytes = b.getAllocationByteCount();
+    } else {
+      bytes = b.getByteCount();
+    }
+    Log.d(AsyncBitmapLoader.class.getName(),
+            String.format(ctx.getString(R.string.log_bitmap_alloc), bytes));
   }
 
   /**
@@ -245,7 +257,8 @@ public class AsyncBitmapLoader extends AsyncProgressTask<Integer, Void, Bitmap> 
 
     float scaleX = viewWidth / (float) imgWidth;
     float scaleY = viewHeight / (float) imgHeight;
-    m.postScale(scaleX, scaleY);
+    m.postScale(scaleX == 0 ? 1 : scaleX,
+            scaleY == 0 ? 1 : scaleY);
 
     return m;
   }
