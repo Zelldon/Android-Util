@@ -81,7 +81,7 @@ public class AsyncGETRequester extends AsyncProgressTask<GetRequestInfo, Void, L
    * The gzip header value for the Content Encoding Header.
    */
   private static final String CONTENT_ENCODING_GZIP = "gzip";
-  
+
   /**
    * The ctor of the AsyncJSONSender
    *
@@ -126,6 +126,12 @@ public class AsyncGETRequester extends AsyncProgressTask<GetRequestInfo, Void, L
     return result;
   }
 
+  /**
+   * Executes the HTTP GET request which should write the response in the result list.
+   * 
+   * @param get the HTTP GET request
+   * @param result the result list which should contain the response
+   */
   private void executeGetRequest(HttpGet get, List<JSONObject> result) {
     HttpClient client = new DefaultHttpClient();
     try {
@@ -133,38 +139,75 @@ public class AsyncGETRequester extends AsyncProgressTask<GetRequestInfo, Void, L
       if (response == null) {
         job.doExeptionHandling(null);
       } else {
-        int statusCode = response.getStatusLine().getStatusCode();
-        if (statusCode >= 400) {
-          Log.e(AsyncGETRequester.class.getName(), String.format(ERROR_LOG_MSG, response.getStatusLine().getStatusCode()));
-          job.doExeptionHandling(null);
-        } else {
-          if (statusCode != 304) {
-            HttpEntity entity = response.getEntity();
-            if (entity != null && entity.getContentType().getValue().contains(CONTENT_TYPE)) {
-              try {
-                String jsonStr = extractEntityContent(entity);
-                JSONObject object = new JSONObject(jsonStr);
-                result.add(object);
-              } catch (JSONException ex) {
-                Log.e(AsyncGETRequester.class.getName(), EXECEPTION_LOG_MSG, ex);
-              }
-            }
-          }
-          Header responseEtag = response.getFirstHeader(HEADER_ETAG);
-          if (responseEtag != null) {
-            String newEtag = responseEtag.getValue();
-            Header ifNoneMatchHeader = get.getFirstHeader(HEADER_IF_NONE_MATCH);
-            if (newEtag != null
-                    && (ifNoneMatchHeader == null
-                    || !newEtag.equalsIgnoreCase(ifNoneMatchHeader.getValue()))) {
-              job.handleNewEtag(get.getURI().toString(), newEtag);
-            }
-          }
-        }
+        handleResponse(get, response, result);
       }
     } catch (IOException ex) {
       Log.e(AsyncGETRequester.class.getName(), EXECEPTION_LOG_MSG, ex);
       job.doExeptionHandling(ex);
+    }
+  }
+
+  /**
+   * Handles the response of the HTTP GET request, extracts the entities 
+   * and write them into the result list.
+   * 
+   * @param get the used HTTP GET request
+   * @param response the HTTP response 
+   * @param result the result list which should contains the json of the response
+   */
+  private void handleResponse(HttpGet get, HttpResponse response, List<JSONObject> result) {
+    int statusCode = response.getStatusLine().getStatusCode();
+    if (statusCode >= 400) {
+      Log.e(AsyncGETRequester.class.getName(), String.format(ERROR_LOG_MSG, response.getStatusLine().getStatusCode()));
+      job.doExeptionHandling(null);
+    } else {
+      if (statusCode != 304) {
+        handleEntity(response.getEntity(), result);
+      }
+      handleResponseEtag(get, response);
+    }
+  }
+
+  /**
+   * Handles the entity and extracts the json which will be writen into the 
+   * result list.
+   * 
+   * @param entity the HTTP entity which was send by the response
+   * @param result the result list which should contains the json result of the response
+   */
+  private void handleEntity(HttpEntity entity, List<JSONObject> result) {
+    if (entity == null)
+      return;
+    
+    Header contentType = entity.getContentType();
+    if ((contentType != null && contentType.getValue() != null)
+            && contentType.getValue().contains(CONTENT_TYPE)) {
+      try {
+        String jsonStr = extractEntityContent(entity);
+        JSONObject object = new JSONObject(jsonStr);
+        result.add(object);
+      } catch (JSONException ex) {
+        Log.e(AsyncGETRequester.class.getName(), EXECEPTION_LOG_MSG, ex);
+      }
+    }
+  }
+
+  /**
+   * Handles the ETAG of the response from the GET request.
+   * 
+   * @param get the used HTTP GET request
+   * @param response the returned HTTP response
+   */
+  private void handleResponseEtag(HttpGet get, HttpResponse response) {
+    Header responseEtag = response.getFirstHeader(HEADER_ETAG);
+    if (responseEtag != null) {
+      String newEtag = responseEtag.getValue();
+      Header ifNoneMatchHeader = get.getFirstHeader(HEADER_IF_NONE_MATCH);
+      if (newEtag != null
+              && (ifNoneMatchHeader == null
+              || !newEtag.equalsIgnoreCase(ifNoneMatchHeader.getValue()))) {
+        job.handleNewEtag(get.getURI().toString(), newEtag);
+      }
     }
   }
 
@@ -177,21 +220,58 @@ public class AsyncGETRequester extends AsyncProgressTask<GetRequestInfo, Void, L
    */
   private String extractEntityContent(HttpEntity entity) {
     String content = "";
+    Header encoding = entity.getContentEncoding();
+    if (encoding != null) {
+      String headerValue = encoding.getValue();
+      if (headerValue != null && headerValue.contains(CONTENT_ENCODING_GZIP))
+        content = extractGZIPEntityContent(entity);
+    } 
+    
+    if (content.isEmpty())
+      content = extractEntityWithDefaultMethod(entity);
+    
+    return content;
+  }
+
+  /**
+   * Extracts the content from the entity via the default method.
+   * That means the EntityUtils class is used with the UTF-8 type setting.
+   * 
+   * @param entity the entity which contains the content
+   * @return the content of the entity
+   * @see EntityUtils
+   */
+  private String extractEntityWithDefaultMethod(HttpEntity entity) {
+    String content = "";
+    try {
+      content = EntityUtils.toString(entity, HTTP.UTF_8);
+    } catch (IOException ex) {
+      Log.e(AsyncGETRequester.class.getName(), IOException.class.getName(), ex);
+    }
+    return content;
+  }
+
+  /**
+   * Extracts and decompress the content from the entity if the
+   * content was zipped by GZIP.
+   * To decompress the content GZIPInputStream is used.
+   * 
+   * @param entity the entity which was compressed with GZIP
+   * @return the content of the entity
+   * @see GZIPInputStream
+   */
+  private String extractGZIPEntityContent(HttpEntity entity) {
+    String content = "";
     GZIPInputStream zis = null;
     try {
-      Header encoding = entity.getContentEncoding();
-      if (encoding != null && encoding.getValue().contains(CONTENT_ENCODING_GZIP)) {
-        byte str[] = new byte[1024];
-        zis = new GZIPInputStream(new BufferedInputStream(entity.getContent()));
-        StringBuilder builder = new StringBuilder();
-        int decompressedSize;
-        while ((decompressedSize = zis.read(str, 0, str.length)) != -1) {
-          builder.append(new String(str, 0, decompressedSize, HTTP.UTF_8));
-        }
-        content = builder.toString();
-      } else {
-        content = EntityUtils.toString(entity, HTTP.UTF_8);
+      byte str[] = new byte[1024];
+      zis = new GZIPInputStream(new BufferedInputStream(entity.getContent()));
+      StringBuilder builder = new StringBuilder();
+      int decompressedSize;
+      while ((decompressedSize = zis.read(str, 0, str.length)) != -1) {
+        builder.append(new String(str, 0, decompressedSize, HTTP.UTF_8));
       }
+      content = builder.toString();
     } catch (IOException ex) {
       Log.e(AsyncGETRequester.class.getName(), IOException.class.getName(), ex);
     } finally {
