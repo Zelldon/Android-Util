@@ -17,7 +17,6 @@
 package de.zell.android.util.fragments;
 
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
@@ -25,7 +24,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import de.zell.android.util.R;
-import de.zell.android.util.db.Entity;
 
 /**
  * Represents an entity view pager to show the entity informations
@@ -33,61 +31,11 @@ import de.zell.android.util.db.Entity;
  * 
  * @author Christopher Zell <zelldon91@googlemail.com>
  */
-public abstract class EntityViewPagerFragment extends Fragment {
-
-  /**
-   * The tag for the for the entity value.
-   */
-  private static final String TAG_ENTITY_PAGER_FRAGMENT = "vierpager";
-  /**
-   * The argument key for the entity value.
-   */
-  public static final String ARG_ENITY = "entity";
-  
-  /**
-   * The argument key for the entity url, to load the entity.
-   */
-  public static final String ARG_ENTITY_URL = "entity.url";
-  
-  /**
-   * The entity which contains the content informations.
-   */
-  protected Entity entity;
-  
-  /**
-   * The url to load the entity.
-   */
-  private String url;
-  
-  /**
-   * Returns the url which identifies the content of the entities. The url is
-   * used to download the content.
-   *
-   * @return the url
-   */
-  public String getURL() {
-    return url;
-  }
+public abstract class EntityViewPagerFragment extends EntityFragment {
 
   @Override
-  public void onCreate(Bundle savedInstanceState) {
-    super.onCreate(savedInstanceState);
-
-    if (savedInstanceState == null) {
-      savedInstanceState = getArguments();
-    }
-
-    if (savedInstanceState != null) {
-      entity = (Entity) savedInstanceState.getSerializable(TAG_ENTITY_PAGER_FRAGMENT);
-      if (entity == null) {
-        entity = (Entity) savedInstanceState.getSerializable(ARG_ENITY);
-        if (entity == null) {
-          url = (String) savedInstanceState.getSerializable(ARG_ENTITY_URL);
-          loadEntity();
-        }
-      }
-      extractEntityInformation();
-    }
+  protected void postRestore() {
+    extractEntityInformation();
   }
   
   @Override
@@ -101,21 +49,6 @@ public abstract class EntityViewPagerFragment extends Fragment {
     viewPager.setAdapter(getPageAdapter((getChildFragmentManager())));
     return root;
   }
-  
-  
-  @Override
-  public void onSaveInstanceState(Bundle outState) {
-    super.onSaveInstanceState(outState);
-    outState.putSerializable(TAG_ENTITY_PAGER_FRAGMENT, entity);
-  }
-  
-  /**
-   * Contains the functionality to load the entities into the current page adapter.
-   *
-   * Could contain an async task to load the content from a web resource or load
-   * content from a database.
-   */
-  protected abstract void loadEntity();
   
   /**
    * Returns the FragmentPagerAdapter implementation which should be used for the
