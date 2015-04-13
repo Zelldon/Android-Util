@@ -26,6 +26,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import de.zell.android.util.R;
 import de.zell.android.util.db.Entity;
+import static de.zell.android.util.fragments.EntityListFragment.ARG_ENTITIES_URL;
 
 /**
  * Represents an entity view pager to show the entity informations
@@ -81,8 +82,10 @@ public abstract class EntityViewPagerFragment extends Fragment {
       entity = (Entity) savedInstanceState.getSerializable(TAG_ENTITY_PAGER_FRAGMENT);
       if (entity == null) {
         entity = (Entity) savedInstanceState.getSerializable(ARG_ENITY);
-        if (entity == null)
+        if (entity == null) {
+          url = (String) savedInstanceState.getSerializable(ARG_ENTITIES_URL);
           loadEntity();
+        }
       }
       extractEntityInformation();
     }
@@ -107,8 +110,27 @@ public abstract class EntityViewPagerFragment extends Fragment {
     outState.putSerializable(TAG_ENTITY_PAGER_FRAGMENT, entity);
   }
   
+  /**
+   * Contains the functionality to load the entities into the current page adapter.
+   *
+   * Could contain an async task to load the content from a web resource or load
+   * content from a database.
+   */
   protected abstract void loadEntity();
+  
+  /**
+   * Returns the FragmentPagerAdapter implementation which should be used for the
+   * view pager fragment.
+   *
+   * @param mgr the fragment mgr
+   * @return the fragment pager adapter which should be used
+   */
   protected abstract FragmentPagerAdapter getPageAdapter(FragmentManager mgr);
+  
+  /**
+   * If the entity was loaded or already set, the extract method is called
+   * to extract the information which should be shown by the view pager.
+   */
   protected abstract void extractEntityInformation();
 }
 
