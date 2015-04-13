@@ -45,10 +45,11 @@ public class EntityListAdapter extends BaseAdapter {
    * Contains the sections.
    */
   protected SparseArray<String> sections;
+  
   /**
    * The application context.
    */
-  private final Context context;
+  protected final Context context;
 
   /**
    * The ctor of the EntitySectionListAdapter.
