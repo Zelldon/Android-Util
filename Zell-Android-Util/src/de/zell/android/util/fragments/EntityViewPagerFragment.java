@@ -26,7 +26,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import de.zell.android.util.R;
 import de.zell.android.util.db.Entity;
-import static de.zell.android.util.fragments.EntityListFragment.ARG_ENTITIES_URL;
 
 /**
  * Represents an entity view pager to show the entity informations
@@ -83,7 +82,7 @@ public abstract class EntityViewPagerFragment extends Fragment {
       if (entity == null) {
         entity = (Entity) savedInstanceState.getSerializable(ARG_ENITY);
         if (entity == null) {
-          url = (String) savedInstanceState.getSerializable(ARG_ENTITIES_URL);
+          url = (String) savedInstanceState.getSerializable(ARG_ENTITY_URL);
           loadEntity();
         }
       }
