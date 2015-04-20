@@ -38,7 +38,7 @@ import org.json.JSONObject;
  * @author Christopher Zell <zelldon91@googlemail.com>
  */
 public class JSONUnmarshaller {
-  
+  private static final String EXCEPTION_CAST_MESSAGE = "Value for field '%1$s' can not be cast from %2$s to %3$s";
 
   /**
    * Unmarshalls the given JSON object and creates with the given values and class
@@ -64,9 +64,20 @@ public class JSONUnmarshaller {
           Object value = json.opt(eleAnno.name());
           if (value != null) {
             if (value instanceof JSONArray)
-              value = parseJSON((JSONArray) value, f, o);
-            
-            f.set(o, f.getType().cast(value));
+              value = unmarshallJSONArray((JSONArray) value, f, o);
+            else if (value instanceof  JSONObject)
+              value = unmarshall((JSONObject) value, c);
+            try {
+              f.set(o, f.getType().cast(value));
+            } catch (ClassCastException cce) {
+              if (f == null)
+                throw cce;
+              else 
+                throw new ClassCastException(String.format(EXCEPTION_CAST_MESSAGE,
+                                            f.getName(),
+                                            value.getClass().getName(),
+                                            f.getType()));
+            }
           }
         }
         f.setAccessible(false);
@@ -89,7 +100,7 @@ public class JSONUnmarshaller {
    *                 values of the JSON objects
    * @return the created collection which contains the JSON array values
    */
-  private static Object parseJSON(JSONArray array, Field f, Object instance) {
+  private static Object unmarshallJSONArray(JSONArray array, Field f, Object instance) {
     final int len = array.length();
     Class<?> type = f.getType();
     Type genType = f.getGenericType();
