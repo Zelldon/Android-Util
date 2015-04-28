@@ -67,7 +67,7 @@ public class JSONUnmarshaller {
             if (value instanceof JSONArray) {
               value = unmarshallJSONArray((JSONArray) value, field, instance);
             } else if (value instanceof JSONObject) {
-              value = unmarshall((JSONObject) value, c);
+              value = unmarshall((JSONObject) value, field.getType());
             }
             setValueToField(field, value, instance);
           }
