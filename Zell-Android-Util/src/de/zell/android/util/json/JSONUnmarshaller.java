@@ -20,6 +20,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -42,6 +43,25 @@ public class JSONUnmarshaller {
   private static final String EXCEPTION_CAST_MESSAGE = "Value for field '%1$s' can not be cast from %2$s to %3$s";
 
   /**
+   * Returns all fields of a given class, use recursion to get also
+   * the inherited fields.
+   * 
+   * @param c the class which contains the fields
+   * @return all declared fields of the given class
+   */
+  private static Field[] getDeclaredFields(Class c) {
+    ArrayList<Field> fields = new ArrayList<Field>();
+    fields.addAll(Arrays.asList(c.getDeclaredFields()));
+    
+    Class superClass = c.getSuperclass();
+    if ( superClass != null && superClass != Object.class) {
+      fields.addAll(Arrays.asList(getDeclaredFields(c.getSuperclass())));
+    }
+    
+    return fields.toArray(new Field[fields.size()]);
+  }
+  
+  /**
    * Unmarshalls the given JSON object and creates with the given values and
    * class the corresponding object instance which contains the JSON values. The
    * class fields must be annotated with the JSONElement annotation to get the
@@ -57,7 +77,7 @@ public class JSONUnmarshaller {
     O instance = null;
     try {
       instance = c.newInstance();
-      Field fields[] = c.getDeclaredFields();
+      Field fields[] = getDeclaredFields(c);
       for (Field field : fields) {
         field.setAccessible(true);
         JSONElement eleAnno = field.getAnnotation(JSONElement.class);
