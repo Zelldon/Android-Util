@@ -26,8 +26,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             android:id="@+id/section_header"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:background="@color/light_gray"
-            android:textColor="@color/black"
+            android:background="?divSectionColor"
+            android:textColor="?divSectionTextColor"
             android:textSize="24sp"
             android:visibility="gone"/>
     <TextView
