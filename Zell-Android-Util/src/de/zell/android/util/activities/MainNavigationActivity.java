@@ -121,6 +121,16 @@ public abstract class MainNavigationActivity extends FragmentActivity {
     mDrawerToggle = createActionBarDrawerToggle();
     mDrawerLayout.setDrawerListener(mDrawerToggle);
     ((DrawerItemClickListener) mDrawerList.getOnItemClickListener()).selectItem(0);
+    setTheme(getThemeID());
+  }
+  
+  /**
+   * Returns the theme id which should be used for the activity.
+   * 
+   * @return the theme id
+   */
+  protected int getThemeID() {
+    return android.R.style.Theme_Black_NoTitleBar;
   }
   
   /**
