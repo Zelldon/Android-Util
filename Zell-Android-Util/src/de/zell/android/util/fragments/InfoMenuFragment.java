@@ -47,8 +47,9 @@ public abstract class InfoMenuFragment extends Fragment {
   }
   
   /**
+   * Returns the used info dialog fragment.
    * 
-   * @return 
+   * @return the dialog fragment
    */
   protected abstract DialogFragment getInfoDialog();
 
