@@ -38,4 +38,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     
     <!--ASYNC BITMAP LOADER-->
     <string name="log_bitmap_alloc">Bitmap created, bytes allocated: %1$s</string>
+    
+    <!--INFO ALERT DIALOG-->
+    <string name="ok">OK</string>
 </resources>
