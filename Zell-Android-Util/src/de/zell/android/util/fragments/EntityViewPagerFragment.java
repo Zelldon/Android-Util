@@ -47,6 +47,7 @@ public abstract class EntityViewPagerFragment extends EntityFragment {
      * effects.
      */
     viewPager.setAdapter(getPageAdapter((getChildFragmentManager())));
+    viewPager.setCurrentItem(getFirstPosition());
     return root;
   }
   
@@ -64,5 +65,18 @@ public abstract class EntityViewPagerFragment extends EntityFragment {
    * to extract the information which should be shown by the view pager.
    */
   protected abstract void extractEntityInformation();
+  
+  /**
+   * Returns the position which item should be showed at first by the pager.
+   * It defines the default page which is shown after start.
+   * 
+   * <p>Per default it returns 0, so the first item is showed as first.</p>
+   * 
+   * @return the first position of the pager
+   */
+  protected int getFirstPosition() {
+    return 0;
+  }
+    
 }
 
