@@ -18,6 +18,7 @@ package de.zell.android.util.activities;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.animation.Animation;
@@ -36,6 +37,9 @@ public abstract class SplashActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.splash_view);
         ImageView iv = (ImageView) findViewById(R.id.splash_image);
+        Drawable splashDrawable = getDrawable();
+        if (splashDrawable != null)
+          iv.setImageDrawable(splashDrawable);
         
         iv.setAnimation(getAnimation());
         
@@ -50,6 +54,10 @@ public abstract class SplashActivity extends Activity {
                 finish();
             }
         }, getSplashTime());
+    }
+    
+    protected Drawable getDrawable() {
+      return getResources().getDrawable(R.drawable.ic_launcher);
     }
     
     /**
