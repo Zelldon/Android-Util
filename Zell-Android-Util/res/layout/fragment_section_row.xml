@@ -24,10 +24,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
     <TextView
             android:id="@+id/section_header"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:background="?divSectionColor"
-            android:textColor="?divSectionTextColor"
+      android:layout_width="fill_parent"
+      android:layout_height="wrap_content"
+      android:background="?divSectionColor"
+      android:textColor="?divSectionTextColor"
             android:textSize="24sp"
             android:visibility="gone"/>
     <TextView
