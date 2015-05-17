@@ -87,6 +87,14 @@ public abstract class MainNavigationActivity extends FragmentActivity {
   protected abstract Fragment[] getNavigationFragments();
   
   /**
+   * Returns the list adapter for the navigation list.
+   * 
+   * @return the list adapter
+   */
+  protected ListAdapter getNavigationListAdapter() {
+    return new ArrayAdapter<String>(this, R.layout.drawer_list_item, applications);
+  }
+  /**
    * Returns the navigations fragment names which will be shown by
    * the navigation drawer.
    * 
@@ -107,8 +115,7 @@ public abstract class MainNavigationActivity extends FragmentActivity {
     // set a custom shadow that overlays the main content when the drawer opens
     mDrawerLayout.setDrawerShadow(R.drawable.ic_drawer_shadow, GravityCompat.START);
     // set up the drawer's list view with items and click listener
-    mDrawerList.setAdapter(new ArrayAdapter<String>(this,
-            R.layout.drawer_list_item, applications));
+    mDrawerList.setAdapter(getNavigationListAdapter());
     
     mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
 
