@@ -138,8 +138,6 @@ public abstract class EntityFragment extends Fragment {
    */
   protected abstract void postRestore();
   
-  
-  
   /**
    * Returns the text view for the given id from the root view.
    * 
