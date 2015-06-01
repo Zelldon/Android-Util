@@ -18,6 +18,8 @@ package de.zell.android.util.fragments;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.view.View;
+import android.widget.TextView;
 import de.zell.android.util.db.Entity;
 
 /**
@@ -135,4 +137,17 @@ public abstract class EntityFragment extends Fragment {
    * executed after the values are set.
    */
   protected abstract void postRestore();
+  
+  
+  
+  /**
+   * Returns the text view for the given id from the root view.
+   * 
+   * @param root the root view
+   * @param id the id which identifies the view
+   * @return the corresponding view
+   */
+  protected TextView getTextView(View root, int id) {
+    return ((TextView) root.findViewById(id));
+  } 
 }
