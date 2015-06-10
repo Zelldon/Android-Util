@@ -21,10 +21,13 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.ProgressBar;
 import de.zell.android.util.R;
+import de.zell.android.util.activities.MainNavigationActivity;
 
 /**
  * Represents the Fragment for the web view.
@@ -100,7 +103,20 @@ public class WebviewFragment extends Fragment {
       webSettings.setJavaScriptEnabled(true);
       webSettings.setBuiltInZoomControls(true);
       webSettings.setSupportZoom(true);
-      content.loadUrl(url);
+      
+      final ProgressBar progressBar = ((MainNavigationActivity) getActivity()).getProgressBar();
+      content.setWebChromeClient(new WebChromeClient(){
+        @Override
+        public void onProgressChanged(WebView view, int newProgress) {
+          progressBar.setProgress(newProgress);
+          if (newProgress == 100)
+            progressBar.setVisibility(View.GONE);
+        }        
+      });
+      
+      progressBar.setIndeterminate(true);
+      progressBar.setVisibility(View.VISIBLE);
+      content.loadUrl(url);      
     } 
 
     getActivity().setTitle(title);
@@ -138,4 +154,4 @@ public class WebviewFragment extends Fragment {
       super.onPageFinished(view, url);
     }
   }
-}
+  }
