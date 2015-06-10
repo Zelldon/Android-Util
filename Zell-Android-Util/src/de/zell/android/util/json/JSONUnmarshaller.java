@@ -25,6 +25,7 @@ import java.util.Collection;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 /**
@@ -150,9 +151,19 @@ public class JSONUnmarshaller {
       c = new ArrayList();
 
       for (int i = 0; i < len; i++) {
-        JSONObject obj = array.optJSONObject(i);
-        if (obj != null) {
-          c.add(unmarshall(obj, listType));
+        if (JSONMarshaller.isPrimitiveWrapper(listType) || listType == String.class) {
+          Object obj = null;
+          try {
+            obj = array.get(i);
+          } catch (JSONException ex) {
+            Logger.getLogger(JSONUnmarshaller.class.getName()).log(Level.SEVERE, null, ex);
+          }
+          if (obj != null)
+            c.add(obj);
+        } else {        
+          JSONObject obj = array.optJSONObject(i);
+          if (obj != null) 
+            c.add(unmarshall(obj, listType));
         }
       }
       try {
