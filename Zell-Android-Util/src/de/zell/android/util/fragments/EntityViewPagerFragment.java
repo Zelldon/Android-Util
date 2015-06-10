@@ -24,6 +24,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import de.zell.android.util.R;
+import de.zell.android.util.db.Entity;
 
 /**
  * Represents an entity view pager to show the entity informations
@@ -36,6 +37,11 @@ public abstract class EntityViewPagerFragment extends EntityFragment {
   @Override
   protected void postRestore() {
     extractEntityInformation();
+  }
+
+  @Override
+  protected void showEntity(Entity entity) {
+    //do nothing
   }
   
   @Override

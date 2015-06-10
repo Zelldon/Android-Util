@@ -18,7 +18,9 @@ package de.zell.android.util.fragments;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.TextView;
 import de.zell.android.util.db.Entity;
 
@@ -109,12 +111,26 @@ public abstract class EntityFragment extends Fragment {
   }
 
   @Override
+  public void onResume() {
+    super.onResume(); 
+    showEntity(entity);
+  }
+
+  @Override
   public void onSaveInstanceState(Bundle outState) {
     super.onSaveInstanceState(outState);
     outState.putSerializable(TAG_ENTITY_FRAGMENT, entity);
     outState.putString(TAG_FRG_TITLE, title);
   }
 
+  /**
+   * Shows the entity details and information in the corresponding
+   * fragment views.
+   * 
+   * @param entity the entity which contains the information.
+   */
+  protected abstract void showEntity(Entity entity);
+  
   /**
    * Restore the instance with the given bundle which contains either saved
    * instance or arguments to create the fragment.
