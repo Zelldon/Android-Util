@@ -127,11 +127,13 @@ public class EntityListAdapter extends BaseAdapter {
   @Override
   public View getView(int position, View convertview, ViewGroup parent) {
     LayoutInflater inflater = (LayoutInflater) this.context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-    View row = inflater.inflate(R.layout.fragment_section_row, parent, false);
+    View row = null;
 
     if (isSection(position)) {
+      row = inflater.inflate(R.layout.fragment_section_row, parent, false);
       setSectionView(row, position);
     } else {
+      row = inflater.inflate(R.layout.fragment_entity_row, parent, false);
       setEntityView(row, position);
     }
 
@@ -163,13 +165,21 @@ public class EntityListAdapter extends BaseAdapter {
   protected void setEntityView(View row, int pos) {
     Entity e = entities.get(pos);
     if (e != null) {
-      TextView title = (TextView) row.findViewById(R.id.entity_title);
-      title.setText(e.getTableName());
+      TextView title = (TextView) row.findViewById(R.id.entity_row_title);
+      title.setText(getEntityTitle(e));
       title.setVisibility(View.VISIBLE);
-      TextView desc = (TextView) row.findViewById(R.id.entity_description);
-      desc.setText(e.getID().toString());
+      TextView desc = (TextView) row.findViewById(R.id.entity_row_description);
+      desc.setText(getEntityDescription(e));
       desc.setVisibility(View.VISIBLE);
     }
+  }
+  
+  protected String getEntityTitle(Entity e) {
+    return e.getTableName();
+  }
+  
+  protected String getEntityDescription(Entity e) {
+    return e.getID().toString();
   }
 
   /**
