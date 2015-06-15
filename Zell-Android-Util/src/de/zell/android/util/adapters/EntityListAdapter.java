@@ -17,6 +17,7 @@
 package de.zell.android.util.adapters;
 
 import android.content.Context;
+import android.text.Spanned;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -174,11 +175,11 @@ public class EntityListAdapter extends BaseAdapter {
     }
   }
   
-  protected String getEntityTitle(Entity e) {
+  protected CharSequence getEntityTitle(Entity e) {
     return e.getTableName();
   }
   
-  protected String getEntityDescription(Entity e) {
+  protected CharSequence getEntityDescription(Entity e) {
     return e.getID().toString();
   }
 
