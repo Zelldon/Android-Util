@@ -24,8 +24,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.*;
@@ -176,44 +174,6 @@ public abstract class MainNavigationActivity extends FragmentActivity {
   }
 
   @Override
-  public boolean onCreateOptionsMenu(Menu menu) {
-    if (menu != null) {
-      MenuInflater inflater = getMenuInflater();
-      inflater.inflate(R.menu.main, menu);
-
-      final SearchView searchView = (SearchView) menu.findItem(R.id.action_search).getActionView();
-      searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-        public boolean onQueryTextSubmit(String query) {
-          Toast.makeText(MainNavigationActivity.this,
-                         String.format(getString(R.string.search_submitted), query),
-                         Toast.LENGTH_LONG).show();
-          searchView.onActionViewCollapsed(); //close search view
-          startSearch(query);
-          return true;
-        }
-
-        public boolean onQueryTextChange(String arg0) {
-          return true;
-        }
-      });
-    }
-    return super.onCreateOptionsMenu(menu);
-  }
-
-  /* Called whenever we call invalidateOptionsMenu() */
-  @Override
-  public boolean onPrepareOptionsMenu(Menu menu) {
-    // If the nav drawer is open, hide action items related to the content view
-    boolean drawerOpen = mDrawerLayout.isDrawerOpen(mDrawerList);
-    if (menu != null) {
-      MenuItem item = menu.findItem(R.id.action_search);
-      if (item != null)
-        item.setVisible(!drawerOpen);
-    }
-    return super.onPrepareOptionsMenu(menu);
-  }
-
-  @Override
   public boolean onOptionsItemSelected(MenuItem item) {
     // The action bar home/up action should open or close the drawer.
     // ActionBarDrawerToggle will take care of this.
@@ -277,7 +237,7 @@ public abstract class MainNavigationActivity extends FragmentActivity {
     getActionBar().setTitle(mTitle);
   }
 
-  /**
+  /*
    * When using the ActionBarDrawerToggle, you must call it during
    * onPostCreate() and onConfigurationChanged()...
    */
