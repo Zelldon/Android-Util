@@ -149,7 +149,6 @@ public class EntityListAdapter extends BaseAdapter {
    */
   protected void setSectionView(View row, int pos) {
     String sec = sections.get(pos);
-    row.setBackgroundColor(context.getResources().getColor(R.color.light_gray));
     if (sec != null) {
       TextView header = (TextView) row.findViewById(R.id.section_header);
       header.setText(sec);
