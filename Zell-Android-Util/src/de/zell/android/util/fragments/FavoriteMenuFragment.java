@@ -84,14 +84,15 @@ public abstract class FavoriteMenuFragment extends Fragment {
   public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
     super.onCreateOptionsMenu(menu, inflater);
     inflater.inflate(R.menu.fav_menu, menu);
+    setFavoriteMenuItem(menu);
+  }
+  
+  private void setFavoriteMenuItem(Menu menu) {
+    if (menu == null)
+      return;
+    
     item = menu.findItem(R.id.action_favorite);
-    if (favorited) {
-      item.setIcon(R.drawable.ic_favorite_set);
-      item.setChecked(favorited);
-    } else {
-      item.setIcon(R.drawable.ic_favorite);
-      item.setChecked(favorited);
-    }
+    setFavIcon(favorited);
   }
 
   @Override
@@ -103,14 +104,7 @@ public abstract class FavoriteMenuFragment extends Fragment {
   @Override
   public void onPrepareOptionsMenu(Menu menu) {
     super.onPrepareOptionsMenu(menu);
-    item = menu.findItem(R.id.action_favorite);
-    if (favorited) {
-      item.setIcon(R.drawable.ic_favorite_set);
-      item.setChecked(favorited);
-    } else {
-      item.setIcon(R.drawable.ic_favorite);
-      item.setChecked(favorited);
-    }
+    setFavIcon(favorited);
   }
 
   @Override
@@ -118,15 +112,8 @@ public abstract class FavoriteMenuFragment extends Fragment {
     if (favItem.getItemId() == R.id.action_favorite) {
       SQLQuery query = getFavoriteUpdateSQLQuery();
 
-      Integer fav;
-      if (favItem.isChecked()) { //UNfavorited
-        setFavIcon(false);
-        fav = 0;
-      } else {
-        setFavIcon(true);
-        fav = 1;
-      }
-
+      setFavIcon(!favItem.isChecked());
+      Integer fav = favItem.isChecked() ? 0 : 1;
       query.addValues(getFavoriteColumnName(), fav.toString());
       getDAO().updateEntity(query);
     }
