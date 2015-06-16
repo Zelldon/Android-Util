@@ -128,8 +128,7 @@ public class EntityListAdapter extends BaseAdapter {
   @Override
   public View getView(int position, View convertview, ViewGroup parent) {
     LayoutInflater inflater = (LayoutInflater) this.context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-    View row = null;
-
+    View row;
     if (isSection(position)) {
       row = inflater.inflate(R.layout.fragment_section_row, parent, false);
       setSectionView(row, position);
@@ -165,19 +164,41 @@ public class EntityListAdapter extends BaseAdapter {
   protected void setEntityView(View row, int pos) {
     Entity e = entities.get(pos);
     if (e != null) {
-      TextView title = (TextView) row.findViewById(R.id.entity_row_title);
-      title.setText(getEntityTitle(e));
-      title.setVisibility(View.VISIBLE);
-      TextView desc = (TextView) row.findViewById(R.id.entity_row_description);
-      desc.setText(getEntityDescription(e));
-      desc.setVisibility(View.VISIBLE);
+      setTextViewVisible(row, R.id.entity_row_title, getEntityTitle(e));
+      setTextViewVisible(row, R.id.entity_row_description, getEntityDescription(e));
     }
   }
   
+  /**
+   * Sets a TextView from the view with the given ID 
+   * to visible and displays the given text.
+   * 
+   * @param row the view which contains the text view
+   * @param id the id which identifies the text view
+   * @param text the text which should be displayed
+   */
+  protected void setTextViewVisible(View row, int id, CharSequence text) {
+    TextView title = (TextView) row.findViewById(id);
+    title.setText(text);
+    title.setVisibility(View.VISIBLE);
+  }
+  
+  /**
+   * Returns the title of the entity which is used for the entity row.
+   * 
+   * @param e the entity which contains the information
+   * @return the title of the entity which is displayed in the row
+   */
   protected CharSequence getEntityTitle(Entity e) {
     return e.getTableName();
   }
   
+  /**
+   * Returns the description of the entity which is used for the entity row.
+   * 
+   * @param e the entity which contains the information
+   * @return the title of the entity which is displayed in the row
+   */
   protected CharSequence getEntityDescription(Entity e) {
     return e.getID().toString();
   }
