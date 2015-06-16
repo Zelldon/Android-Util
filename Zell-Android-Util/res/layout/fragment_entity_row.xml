@@ -27,12 +27,13 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"  
     android:textStyle="bold"
-    android:textSize="16sp" />
+    android:textSize="16sp" 
+    android:visibility="gone"/>
 
   <TextView
     android:id="@+id/entity_row_description"
     android:layout_width="fill_parent"
-    android:layout_height="wrap_content" >
-  </TextView>
+    android:layout_height="wrap_content" 
+    android:visibility="gone"/>
 
 </LinearLayout> 
