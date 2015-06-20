@@ -17,6 +17,7 @@
 package de.zell.android.util.activities;
 
 
+import android.app.ActionBar;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
@@ -116,16 +117,25 @@ public abstract class MainNavigationActivity extends FragmentActivity {
     mDrawerList.setAdapter(getNavigationListAdapter());
     
     mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
-
-    // enable ActionBar app icon to behave as action to toggle nav drawer
-    getActionBar().setDisplayHomeAsUpEnabled(true);
-    getActionBar().setHomeButtonEnabled(true);
+    initActionBar();
 
     // ActionBarDrawerToggle ties together the the proper interactions
     // between the sliding drawer and the action bar app icon
     mDrawerToggle = createActionBarDrawerToggle();
     mDrawerLayout.setDrawerListener(mDrawerToggle);
     ((DrawerItemClickListener) mDrawerList.getOnItemClickListener()).selectItem(0);
+  }
+  
+  private void initActionBar() {
+    ActionBar bar = getActionBar();
+    // enable ActionBar app icon to behave as action to toggle nav drawer
+    bar.setIcon(getActionBarIcon());
+    bar.setDisplayHomeAsUpEnabled(true);
+    bar.setHomeButtonEnabled(true);
+  }
+  
+  protected int getActionBarIcon() {
+    return R.drawable.ic_launcher;
   }
   
   
