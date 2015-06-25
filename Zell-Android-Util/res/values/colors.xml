@@ -19,6 +19,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 <resources>
   <color name="light_blue">#0085FF</color>
   <color name="gray">#AAAAAA</color>
+  <color name="grey">#909090</color>
   <color name="light_gray">#d8d7d7</color>
   <color name="blue">#333FFF</color>
   <color name="black">#000000</color>
