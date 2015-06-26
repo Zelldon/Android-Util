@@ -18,9 +18,7 @@ package de.zell.android.util.fragments;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.TextView;
 import de.zell.android.util.db.Entity;
 
@@ -28,7 +26,7 @@ import de.zell.android.util.db.Entity;
  *
  * @author Christopher Zell <zelldon91@googlemail.com>
  */
-public abstract class EntityFragment extends Fragment {
+public abstract class EntityFragment extends ActionBarManagerFragment {
 
   /**
    * The argument key for the entity url.
@@ -40,17 +38,9 @@ public abstract class EntityFragment extends Fragment {
   public static final String ARG_ENTITY = "entity";
 
   /**
-   * The argument key for the fragment title.
-   */
-  public static final String ARG_FRG_TITLE = "fragment.title";
-  /**
    * The tag key for the entities content.
    */
   private static final String TAG_ENTITY_FRAGMENT = "entity.content";
-  /**
-   * The tag key for the fragment title.
-   */
-  public static final String TAG_FRG_TITLE = "tag.fragment.title";
 
   /**
    * The url which identifies the content of the entity.
@@ -67,7 +57,6 @@ public abstract class EntityFragment extends Fragment {
    */
   protected Entity entity;
   
-
   /**
    * Returns the url which identifies the content of the entities. The url is
    * used to download the content.
@@ -96,15 +85,6 @@ public abstract class EntityFragment extends Fragment {
           loadEntity();
         }
       }
-      
-      if (title == null) {
-        title = savedInstanceState.getString(TAG_FRG_TITLE);
-        if (title == null)
-          title = savedInstanceState.getString(ARG_FRG_TITLE);
-        if (title != null)
-          getActivity().getActionBar().setTitle(title);
-      }
-      
       postRestore();
     }
 
@@ -120,7 +100,6 @@ public abstract class EntityFragment extends Fragment {
   public void onSaveInstanceState(Bundle outState) {
     super.onSaveInstanceState(outState);
     outState.putSerializable(TAG_ENTITY_FRAGMENT, entity);
-    outState.putString(TAG_FRG_TITLE, title);
   }
 
   /**

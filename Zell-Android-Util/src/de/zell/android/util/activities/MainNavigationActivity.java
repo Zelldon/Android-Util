@@ -29,6 +29,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.*;
 import de.zell.android.util.R;
+import de.zell.android.util.fragments.ActionBarTitleManager;
 import de.zell.android.util.fragments.FragmentReplacer;
 
 /**
@@ -206,8 +207,21 @@ public abstract class MainNavigationActivity extends FragmentActivity {
     /**
      * Contains all existing main fragments.
      */
-    private final Fragment fragments[] = getNavigationFragments();
+    private final Fragment fragments[];
 
+    public DrawerItemClickListener() {
+      fragments = getNavigationFragments();
+      for(int i = 0; i < fragments.length; i++) {
+        Fragment frg = fragments[i];
+        Bundle title = frg.getArguments();
+        if (title == null)
+          title = new Bundle();
+        title.putString(ActionBarTitleManager.ARG_ACTION_BAR_TITLE,
+                       applications[i % applications.length]);
+        frg.setArguments(title);
+       }
+    }
+    
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
       selectItem(position);
@@ -226,7 +240,7 @@ public abstract class MainNavigationActivity extends FragmentActivity {
                                FragmentReplacer.MAIN_CONTENT);
       // update selected item and title, then close the drawer
       mDrawerList.setItemChecked(position, true);
-      setTitle(applications[position]);
+      setTitle(applications[position % applications.length]);
       mDrawerLayout.closeDrawer(mDrawerList);
     }
 

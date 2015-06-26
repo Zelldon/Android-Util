@@ -18,7 +18,6 @@ package de.zell.android.util.fragments;
 
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
-import android.support.v4.app.Fragment;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -30,7 +29,7 @@ import de.zell.android.util.R;
  * 
  * @author Christopher Zell <zelldon91@googlemail.com>
  */
-public abstract class InfoMenuFragment extends Fragment {
+public abstract class InfoMenuFragment extends ActionBarManagerFragment {
 
   
   private static final String TAG_INFO = "info";

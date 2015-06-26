@@ -65,6 +65,11 @@ public abstract class EntityListFragment extends ListFragment {
   protected List<Entity> entities = null;
 
   /**
+   * The manager manages the action bar title.
+   */
+  private ActionBarTitleManager barManager;
+  
+  /**
    * Returns the url which identifies the content of the entities. The url is
    * used to download the content.
    *
@@ -108,12 +113,19 @@ public abstract class EntityListFragment extends ListFragment {
           loadEntities();
         } 
       }
+      barManager = new ActionBarTitleManager(savedInstanceState);
       if (entities != null)
         adapter.setEntities(entities);
       setListAdapter(adapter);
     }
   }
 
+  @Override
+  public void onStart() {
+    super.onStart(); 
+    barManager.setActionBarTitle(getActivity().getActionBar());
+  }
+  
   /**
    * Restores the entity list from the given bundle with the given key.
    * 
@@ -142,6 +154,7 @@ public abstract class EntityListFragment extends ListFragment {
   @Override
   public void onSaveInstanceState(Bundle outState) {
     super.onSaveInstanceState(outState);
+    barManager.storeTitle(outState);
     if (entities != null)
       outState.putSerializable(TAG_ENTITIES_CONTENT,
                 entities.toArray(new Entity[entities.size()]));

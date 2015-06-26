@@ -16,7 +16,6 @@
  */
 package de.zell.android.util.fragments;
 
-import android.app.Fragment;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -32,7 +31,7 @@ import java.io.Serializable;
  * 
  * @author Christopher Zell <zelldon91@googlemail.com>
  */
-public abstract class FavoriteMenuFragment extends Fragment {
+public abstract class FavoriteMenuFragment extends ActionBarManagerFragment {
 
   /**
    * The favorite menu item.
