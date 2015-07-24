@@ -16,8 +16,10 @@
  */
 package de.zell.android.util.fragments;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import de.zell.android.util.activities.IntentKeys;
 
 /**
  * Represents a action bar manager fragment, which uses the 
@@ -26,7 +28,7 @@ import android.support.v4.app.Fragment;
  * @see ActionBarTitleManager
  * @author Christopher Zell <zelldon91@googlemail.com>
  */
-public class ActionBarManagerFragment extends Fragment {
+public abstract class ActionBarManagerFragment extends Fragment implements Nameable {
 
   /**
    * The manager manages the action bar title.
@@ -43,9 +45,21 @@ public class ActionBarManagerFragment extends Fragment {
   }
 
   @Override
+  public void onPause() {
+    super.onPause(); 
+    Intent hideFrag = new Intent(IntentKeys.BROADCAST_HIDE_FRAGMENT);
+    getActivity().sendBroadcast(hideFrag);
+  }
+  
+  @Override
   public void onResume() {
     super.onResume();
     barManager.setActionBarTitle(getActivity().getActionBar());
+    Intent showFrag = new Intent(IntentKeys.BROADCAST_VIEW_FRAGMENT);
+    Bundle args = new Bundle();
+    args.putString(IntentKeys.BROUDCAST_VIEW_FRAGMENT_ARGS_FRAG_NAME, getName());
+    showFrag.putExtra(IntentKeys.BROUDCAST_VIEW_FRAGMENT_ARGS, args);
+    getActivity().sendBroadcast(showFrag);
   }
 
   @Override

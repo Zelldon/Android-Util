@@ -16,17 +16,18 @@
  */
 package de.zell.android.util.fragments;
 
+import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.view.View;
 import android.widget.TextView;
+import de.zell.android.util.activities.IntentKeys;
 import de.zell.android.util.db.Entity;
 
 /**
  *
  * @author Christopher Zell <zelldon91@googlemail.com>
  */
-public abstract class EntityFragment extends ActionBarManagerFragment {
+public abstract class EntityFragment extends ActionBarManagerFragment implements Nameable {
 
   /**
    * The argument key for the entity url.
@@ -70,7 +71,6 @@ public abstract class EntityFragment extends ActionBarManagerFragment {
   @Override
   public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-
     if (savedInstanceState == null) {
       savedInstanceState = getArguments();
     }
@@ -94,7 +94,21 @@ public abstract class EntityFragment extends ActionBarManagerFragment {
   public void onResume() {
     super.onResume(); 
     showEntity(entity);
+    Intent showFrag = new Intent(IntentKeys.BROADCAST_VIEW_FRAGMENT);
+    Bundle args = new Bundle();
+    args.putString(IntentKeys.BROUDCAST_VIEW_FRAGMENT_ARGS_FRAG_NAME, getName());
+    showFrag.putExtra(IntentKeys.BROUDCAST_VIEW_FRAGMENT_ARGS, args);
+    getActivity().sendBroadcast(showFrag);
   }
+
+  @Override
+  public void onPause() {
+    super.onPause(); 
+    Intent hideFrag = new Intent(IntentKeys.BROADCAST_HIDE_FRAGMENT);
+    getActivity().sendBroadcast(hideFrag);
+  }
+  
+  
 
   @Override
   public void onSaveInstanceState(Bundle outState) {

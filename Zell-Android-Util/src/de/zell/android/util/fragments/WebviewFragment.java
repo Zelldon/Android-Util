@@ -16,6 +16,7 @@
 
 package de.zell.android.util.fragments;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -27,6 +28,7 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ProgressBar;
 import de.zell.android.util.R;
+import de.zell.android.util.activities.IntentKeys;
 import de.zell.android.util.activities.MainNavigationActivity;
 
 /**
@@ -34,7 +36,7 @@ import de.zell.android.util.activities.MainNavigationActivity;
  * 
  * @author Christopher Zell <zelldon91@googlemail.com>
  */
-public class WebviewFragment extends Fragment {
+public class WebviewFragment extends Fragment implements Nameable {
 
   /**
    * The argument key for the url.
@@ -130,6 +132,29 @@ public class WebviewFragment extends Fragment {
     outState.putString(TAG_WEBVIEW_TITLE, title);
   }
 
+  
+
+  @Override
+  public void onPause() {
+    super.onPause(); 
+    Intent hideFrag = new Intent(IntentKeys.BROADCAST_HIDE_FRAGMENT);
+    getActivity().sendBroadcast(hideFrag);
+  }
+  
+  public String getName() {
+    return WebviewFragment.class.getName();
+  }
+  
+  @Override
+  public void onResume() {
+    super.onResume();
+    Intent showFrag = new Intent(IntentKeys.BROADCAST_VIEW_FRAGMENT);
+    Bundle args = new Bundle();
+    args.putString(IntentKeys.BROUDCAST_VIEW_FRAGMENT_ARGS_FRAG_NAME, getName());
+    showFrag.putExtra(IntentKeys.BROUDCAST_VIEW_FRAGMENT_ARGS, args);
+    getActivity().sendBroadcast(showFrag);
+  }
+  
   @Override
   public void onDestroy() {
     super.onDestroy();

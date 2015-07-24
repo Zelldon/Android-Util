@@ -17,10 +17,12 @@
 package de.zell.android.util.fragments;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
 import android.view.View;
 import android.widget.ListView;
+import de.zell.android.util.activities.IntentKeys;
 import de.zell.android.util.adapters.EntityListAdapter;
 import de.zell.android.util.db.Entity;
 import java.util.Arrays;
@@ -33,7 +35,7 @@ import java.util.List;
  *
  * @author Christopher Zell <zelldon91@googlemail.com>
  */
-public abstract class EntityListFragment extends ListFragment {
+public abstract class EntityListFragment extends ListFragment implements Nameable {
 
   /**
    * The argument key for the entity url.
@@ -78,13 +80,18 @@ public abstract class EntityListFragment extends ListFragment {
   public String getURL() {
     return url;
   }
-
+  
   @Override
   public void onResume() {
     super.onResume();
     if (index != -1) {
       this.getListView().setSelectionFromTop(index, top);
     }
+    Intent showFrag = new Intent(IntentKeys.BROADCAST_VIEW_FRAGMENT);
+    Bundle args = new Bundle();
+    args.putString(IntentKeys.BROUDCAST_VIEW_FRAGMENT_ARGS_FRAG_NAME, getName());
+    showFrag.putExtra(IntentKeys.BROUDCAST_VIEW_FRAGMENT_ARGS, args);
+    getActivity().sendBroadcast(showFrag);
   }
 
   @Override
@@ -93,6 +100,8 @@ public abstract class EntityListFragment extends ListFragment {
     index = this.getListView().getFirstVisiblePosition();
     View v = this.getListView().getChildAt(0);
     top = (v == null) ? 0 : v.getTop();
+    Intent hideFrag = new Intent(IntentKeys.BROADCAST_HIDE_FRAGMENT);
+    getActivity().sendBroadcast(hideFrag);
   }
 
   @Override
