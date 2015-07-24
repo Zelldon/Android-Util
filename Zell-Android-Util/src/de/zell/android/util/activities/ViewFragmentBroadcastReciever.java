@@ -38,7 +38,12 @@ public class ViewFragmentBroadcastReciever extends BroadcastReceiver {
   /**
    * The information which will be logged if the hide intent was received.
    */
-  private static final String HIDE_FRAGMENT = "Hide Fragment";
+  private static final String HIDE_FRAGMENT = "Hide Fragment %1$s";
+  
+  /**
+   * The main fragment which is currently viewed.
+   */
+  protected String currentMainFragment;
   
   @Override
   public void onReceive(Context arg0, Intent arg1) {
@@ -57,10 +62,10 @@ public class ViewFragmentBroadcastReciever extends BroadcastReceiver {
    * @param args the arguments from the intent
    */
   protected void onViewFragment(Bundle args) {
-    if (args != null) {
-      String name = args.getString(IntentKeys.BROUDCAST_VIEW_FRAGMENT_ARGS_FRAG_NAME);
+    if (args != null && currentMainFragment == null) {
+      currentMainFragment = args.getString(IntentKeys.BROUDCAST_VIEW_FRAGMENT_ARGS_FRAG_NAME);
       Log.d(ViewFragmentBroadcastReciever.class.getName(),
-              String.format(VIEW_FRAGMENT, name));
+              String.format(VIEW_FRAGMENT, currentMainFragment));
     }
   }
   
@@ -68,6 +73,8 @@ public class ViewFragmentBroadcastReciever extends BroadcastReceiver {
    * Will be called if the hide fragment intent was received.
    */
   protected void onHideFragment() {
-    Log.d(ViewFragmentBroadcastReciever.class.getName(), HIDE_FRAGMENT);
+    if (currentMainFragment != null)
+      Log.d(ViewFragmentBroadcastReciever.class.getName(), String.format(HIDE_FRAGMENT, currentMainFragment));
+    currentMainFragment = null;
   }
 }
