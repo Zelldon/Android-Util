@@ -103,6 +103,8 @@ public abstract class MainNavigationActivity extends FragmentActivity {
    */
   protected abstract String[] getNavigationFragmentNames();
   
+  private ViewFragmentBroadcastReciever reciever;
+  
   protected ViewFragmentBroadcastReciever getBroadcastReciever() {
     return new ViewFragmentBroadcastReciever();
   }
@@ -118,8 +120,6 @@ public abstract class MainNavigationActivity extends FragmentActivity {
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.main_nav_drawer);
-    
-    registerReceiver(getBroadcastReciever(), getIntentFilter());
 
     mTitle = mDrawerTitle = getTitle();
     applications = getNavigationFragmentNames();
@@ -291,5 +291,18 @@ public abstract class MainNavigationActivity extends FragmentActivity {
     super.onConfigurationChanged(newConfig);
     // Pass any configuration change to the drawer toggls
     mDrawerToggle.onConfigurationChanged(newConfig);
+  }
+
+  @Override
+  protected void onStart() {
+    super.onStart(); 
+    reciever = getBroadcastReciever();
+    registerReceiver(reciever, getIntentFilter());
+  }
+
+  @Override
+  protected void onStop() {
+    super.onStop(); 
+    unregisterReceiver(reciever);
   }
 }
