@@ -20,17 +20,15 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import de.zell.android.util.activities.IntentKeys;
-import java.util.Date;
 
 
 /**
- *
+ * Represents an auto closable dialog fragment which closes himself if the onPause
+ * method is called.
+ * 
  * @author Christopher Zell <zelldon91@googlemail.com>
  */
 public abstract class AutoCloseDialogFragment extends DialogFragment implements Nameable {
-
-  protected abstract String getDialogName();
-  
 
   @Override
   public void onCreate(Bundle savedInstanceState) {
