@@ -18,6 +18,7 @@ package de.zell.android.util.activities;
 
 
 import android.app.ActionBar;
+import android.content.IntentFilter;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
@@ -102,10 +103,23 @@ public abstract class MainNavigationActivity extends FragmentActivity {
    */
   protected abstract String[] getNavigationFragmentNames();
   
+  protected ViewFragmentBroadcastReciever getBroadcastReciever() {
+    return new ViewFragmentBroadcastReciever();
+  }
+  
+  protected IntentFilter getIntentFilter() {
+    IntentFilter filter = new IntentFilter();
+    filter.addAction(IntentKeys.BROADCAST_VIEW_FRAGMENT);
+    filter.addAction(IntentKeys.BROADCAST_HIDE_FRAGMENT);
+    return filter;
+  }
+  
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.main_nav_drawer);
+    
+    registerReceiver(getBroadcastReciever(), getIntentFilter());
 
     mTitle = mDrawerTitle = getTitle();
     applications = getNavigationFragmentNames();
