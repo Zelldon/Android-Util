@@ -20,6 +20,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import de.zell.android.util.activities.IntentKeys;
+import de.zell.android.util.activities.ViewFragmentBroadcaster;
 
 /**
  * Represents a action bar manager fragment, which uses the 
@@ -47,19 +48,14 @@ public abstract class ActionBarManagerFragment extends Fragment implements Namea
   @Override
   public void onPause() {
     super.onPause(); 
-    Intent hideFrag = new Intent(IntentKeys.BROADCAST_HIDE_FRAGMENT);
-    getActivity().sendBroadcast(hideFrag);
+    ViewFragmentBroadcaster.boradcastHideFragment(getActivity());
   }
   
   @Override
   public void onResume() {
     super.onResume();
     barManager.setActionBarTitle(getActivity().getActionBar());
-    Intent showFrag = new Intent(IntentKeys.BROADCAST_VIEW_FRAGMENT);
-    Bundle args = new Bundle();
-    args.putString(IntentKeys.BROUDCAST_VIEW_FRAGMENT_ARGS_FRAG_NAME, getName());
-    showFrag.putExtra(IntentKeys.BROUDCAST_VIEW_FRAGMENT_ARGS, args);
-    getActivity().sendBroadcast(showFrag);
+    ViewFragmentBroadcaster.broadcstViewFragment(getActivity(), getName());
   }
 
   @Override

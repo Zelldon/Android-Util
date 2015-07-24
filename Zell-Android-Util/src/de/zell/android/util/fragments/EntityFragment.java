@@ -21,6 +21,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
 import de.zell.android.util.activities.IntentKeys;
+import de.zell.android.util.activities.ViewFragmentBroadcaster;
 import de.zell.android.util.db.Entity;
 
 /**
@@ -94,18 +95,13 @@ public abstract class EntityFragment extends ActionBarManagerFragment implements
   public void onResume() {
     super.onResume(); 
     showEntity(entity);
-    Intent showFrag = new Intent(IntentKeys.BROADCAST_VIEW_FRAGMENT);
-    Bundle args = new Bundle();
-    args.putString(IntentKeys.BROUDCAST_VIEW_FRAGMENT_ARGS_FRAG_NAME, getName());
-    showFrag.putExtra(IntentKeys.BROUDCAST_VIEW_FRAGMENT_ARGS, args);
-    getActivity().sendBroadcast(showFrag);
+    ViewFragmentBroadcaster.broadcstViewFragment(getActivity(), getName());
   }
 
   @Override
   public void onPause() {
     super.onPause(); 
-    Intent hideFrag = new Intent(IntentKeys.BROADCAST_HIDE_FRAGMENT);
-    getActivity().sendBroadcast(hideFrag);
+    ViewFragmentBroadcaster.boradcastHideFragment(getActivity());
   }
   
   

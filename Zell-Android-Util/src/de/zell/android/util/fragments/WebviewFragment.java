@@ -30,6 +30,7 @@ import android.widget.ProgressBar;
 import de.zell.android.util.R;
 import de.zell.android.util.activities.IntentKeys;
 import de.zell.android.util.activities.MainNavigationActivity;
+import de.zell.android.util.activities.ViewFragmentBroadcaster;
 
 /**
  * Represents the Fragment for the web view.
@@ -137,8 +138,7 @@ public class WebviewFragment extends Fragment implements Nameable {
   @Override
   public void onPause() {
     super.onPause(); 
-    Intent hideFrag = new Intent(IntentKeys.BROADCAST_HIDE_FRAGMENT);
-    getActivity().sendBroadcast(hideFrag);
+    ViewFragmentBroadcaster.boradcastHideFragment(getActivity());
   }
   
   public String getName() {
@@ -148,11 +148,7 @@ public class WebviewFragment extends Fragment implements Nameable {
   @Override
   public void onResume() {
     super.onResume();
-    Intent showFrag = new Intent(IntentKeys.BROADCAST_VIEW_FRAGMENT);
-    Bundle args = new Bundle();
-    args.putString(IntentKeys.BROUDCAST_VIEW_FRAGMENT_ARGS_FRAG_NAME, getName());
-    showFrag.putExtra(IntentKeys.BROUDCAST_VIEW_FRAGMENT_ARGS, args);
-    getActivity().sendBroadcast(showFrag);
+    ViewFragmentBroadcaster.broadcstViewFragment(getActivity(), getName());
   }
   
   @Override

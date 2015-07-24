@@ -23,6 +23,7 @@ import android.support.v4.app.ListFragment;
 import android.view.View;
 import android.widget.ListView;
 import de.zell.android.util.activities.IntentKeys;
+import de.zell.android.util.activities.ViewFragmentBroadcaster;
 import de.zell.android.util.adapters.EntityListAdapter;
 import de.zell.android.util.db.Entity;
 import java.util.Arrays;
@@ -87,11 +88,7 @@ public abstract class EntityListFragment extends ListFragment implements Nameabl
     if (index != -1) {
       this.getListView().setSelectionFromTop(index, top);
     }
-    Intent showFrag = new Intent(IntentKeys.BROADCAST_VIEW_FRAGMENT);
-    Bundle args = new Bundle();
-    args.putString(IntentKeys.BROUDCAST_VIEW_FRAGMENT_ARGS_FRAG_NAME, getName());
-    showFrag.putExtra(IntentKeys.BROUDCAST_VIEW_FRAGMENT_ARGS, args);
-    getActivity().sendBroadcast(showFrag);
+    ViewFragmentBroadcaster.broadcstViewFragment(getActivity(), getName());
   }
 
   @Override
@@ -100,8 +97,7 @@ public abstract class EntityListFragment extends ListFragment implements Nameabl
     index = this.getListView().getFirstVisiblePosition();
     View v = this.getListView().getChildAt(0);
     top = (v == null) ? 0 : v.getTop();
-    Intent hideFrag = new Intent(IntentKeys.BROADCAST_HIDE_FRAGMENT);
-    getActivity().sendBroadcast(hideFrag);
+    ViewFragmentBroadcaster.boradcastHideFragment(getActivity());
   }
 
   @Override
