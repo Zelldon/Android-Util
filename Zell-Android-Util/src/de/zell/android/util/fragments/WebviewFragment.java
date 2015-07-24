@@ -16,7 +16,6 @@
 
 package de.zell.android.util.fragments;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -28,7 +27,6 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ProgressBar;
 import de.zell.android.util.R;
-import de.zell.android.util.activities.IntentKeys;
 import de.zell.android.util.activities.MainNavigationActivity;
 import de.zell.android.util.activities.ViewFragmentBroadcaster;
 

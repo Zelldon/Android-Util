@@ -17,12 +17,10 @@
 package de.zell.android.util.fragments;
 
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
 import android.view.View;
 import android.widget.ListView;
-import de.zell.android.util.activities.IntentKeys;
 import de.zell.android.util.activities.ViewFragmentBroadcaster;
 import de.zell.android.util.adapters.EntityListAdapter;
 import de.zell.android.util.db.Entity;

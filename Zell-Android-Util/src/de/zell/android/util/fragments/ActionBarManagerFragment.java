@@ -16,10 +16,8 @@
  */
 package de.zell.android.util.fragments;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import de.zell.android.util.activities.IntentKeys;
 import de.zell.android.util.activities.ViewFragmentBroadcaster;
 
 /**
