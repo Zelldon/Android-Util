@@ -82,7 +82,7 @@ public class JSONUnmarshaller {
       for (Field field : fields) {
         field.setAccessible(true);
         JSONElement eleAnno = field.getAnnotation(JSONElement.class);
-        if (eleAnno != null) {
+        if (eleAnno != null && !json.isNull(eleAnno.name())) {
           Object value = json.opt(eleAnno.name());
           if (value != null) {
             if (value instanceof JSONArray) {
@@ -117,7 +117,8 @@ public class JSONUnmarshaller {
   private static void setValueToField(Field f, Object value, Object instance)
           throws IllegalArgumentException, IllegalAccessException {
     try {
-      f.set(instance, f.getType().cast(value));
+      if (value != null)
+        f.set(instance, f.getType().cast(value));
     } catch (ClassCastException cce) {
       if (f == null) {
         throw cce;
